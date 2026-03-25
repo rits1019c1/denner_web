@@ -52,8 +52,8 @@
     <!-- Header -->
     <header class="glass rounded-2xl p-4 flex items-center justify-between shadow-2xl">
         <div class="flex items-center gap-3">
-            <div class="bg-pink-500/20 p-2 rounded-xl">
-                <i data-lucide="file-code-2" class="text-pink-400 w-6 h-6"></i>
+            <div class="bg-white p-2 rounded-xl flex items-center justify-center">
+                <img src="logo.png" alt="Denner Logo" class="w-7 h-7 object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png'" />
             </div>
             <div>
                 <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent tracking-tight leading-none">
@@ -63,10 +63,16 @@
             </div>
         </div>
 
-        <button id="runBtn" class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
-            <i data-lucide="play" class="w-5 h-5"></i>
-            Run Code
-        </button>
+        <div class="flex items-center gap-3">
+            <a href="wiki.html" target="_blank" class="flex items-center gap-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-slate-500/20">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                Syntax Wiki
+            </a>
+            <button id="runBtn" class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+                <i data-lucide="play" class="w-5 h-5"></i>
+                Run Code
+            </button>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -167,6 +173,86 @@
                 }
             });
 
+            monaco.languages.registerCompletionItemProvider('denner', {
+                provideCompletionItems: function(model, position) {
+                    const word = model.getWordUntilPosition(position);
+                    const range = {
+                        startLineNumber: position.lineNumber,
+                        endLineNumber: position.lineNumber,
+                        startColumn: word.startColumn,
+                        endColumn: word.endColumn
+                    };
+                    
+                    const text = model.getValue();
+                    const dynamicSuggestions = [];
+                    const seen = new Set();
+                    
+                    // Regex for functions: function name(
+                    const funcRegex = /function\s+([a-zA-Z_$][\w$]*)\s*\(/g;
+                    let match;
+                    while ((match = funcRegex.exec(text)) !== null) {
+                        const name = match[1];
+                        if (!seen.has(name)) {
+                            seen.add(name);
+                            dynamicSuggestions.push({
+                                label: name,
+                                kind: monaco.languages.CompletionItemKind.Function,
+                                insertText: name + '($0)',
+                                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                                detail: 'Function in this file',
+                                range: range
+                            });
+                        }
+                    }
+
+                    // Regex for variables: name = value, or name: type = value
+                    const varRegex = /([a-zA-Z_$][\w$]*)\s*(?::\s*[a-zA-Z_$][\w$]*\s*)?=/g;
+                    while ((match = varRegex.exec(text)) !== null) {
+                        const name = match[1];
+                        if (['if', 'else', 'for', 'while', 'return', 'function', 'import', 'export'].includes(name)) continue;
+                        
+                        if (!seen.has(name)) {
+                            seen.add(name);
+                            dynamicSuggestions.push({
+                                label: name,
+                                kind: monaco.languages.CompletionItemKind.Variable,
+                                insertText: name,
+                                detail: 'Variable in this file',
+                                range: range
+                            });
+                        }
+                    }
+
+                    return {
+                        suggestions: [
+                            ...dynamicSuggestions,
+                            { label: 'function', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'function ', range: range },
+                            { label: 'return', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'return ', range: range },
+                            { label: 'if', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'if ', range: range },
+                            { label: 'else', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'else {\n\t$0\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'for', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'for ', range: range },
+                            { label: 'in', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'in ', range: range },
+                            { label: 'import', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'import "$1" as $2', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'export', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'export ', range: range },
+                            { label: 'num', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'num', range: range },
+                            { label: 'str', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'str', range: range },
+                            { label: 'bool', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'bool', range: range },
+                            { label: 'list', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'list', range: range },
+                            { label: 'obj', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'obj', range: range },
+                            
+                            // Stdlib Functions
+                            { label: 'log.print', detail: 'Print to console', kind: monaco.languages.CompletionItemKind.Function, insertText: 'log.print($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'os.name', detail: 'Get OS name', kind: monaco.languages.CompletionItemKind.Function, insertText: 'os.name()', range: range },
+                            { label: 'os.env', detail: 'Get Env variable', kind: monaco.languages.CompletionItemKind.Function, insertText: 'os.env("$1")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'path.join', detail: 'Join paths', kind: monaco.languages.CompletionItemKind.Function, insertText: 'path.join($1, $2)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'net.get', detail: 'HTTP GET request (async)', kind: monaco.languages.CompletionItemKind.Function, insertText: 'net.get("$1")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'cli.input', detail: 'Prompt user input (async)', kind: monaco.languages.CompletionItemKind.Function, insertText: 'cli.input("$1")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'gui.alert', detail: 'Show native alert modal', kind: monaco.languages.CompletionItemKind.Function, insertText: 'gui.alert($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                        ]
+                    };
+                }
+            });
+
             editor = monaco.editor.create(document.getElementById('editorContainer'), {
                 value: DEFAULT_CODE,
                 language: 'denner',
@@ -189,35 +275,81 @@
         const runBtn = document.getElementById('runBtn');
         const clearBtn = document.getElementById('clearBtn');
 
-        runBtn.addEventListener('click', () => {
+        runBtn.addEventListener('click', async () => {
             if (!editor) return;
-            outputDiv.innerText = "Running...";
+            const originalText = runBtn.innerHTML;
+            runBtn.disabled = true;
+            runBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Resolving...`;
+            lucide.createIcons();
             
-            setTimeout(() => {
-                try {
-                    const code = editor.getValue();
-                    let logs = "";
-
-                    // Use the bundled compiler
-                    const lexer = new DennerBundle.Lexer(code);
-                    const tokens = lexer.tokenize();
-                    const parser = new DennerBundle.Parser(tokens);
-                    const ast = parser.parse();
-                    const jscodegen = new DennerBundle.JSCodeGenerator(ast);
-                    const jsCode = jscodegen.generate();
-
-                    const denner_system_print = (val) => {
-                        logs += (val === undefined ? "" : val.toString()) + "\n";
-                    };
-
-                    const executor = new Function("denner_system_print", jsCode);
-                    executor(denner_system_print);
-
-                    outputDiv.innerText = logs.trim() || "(No output)";
-                } catch (e) {
-                    outputDiv.innerHTML = `<span class="text-rose-400 font-bold">Error:</span>\n${e.message}`;
+            outputDiv.innerText = "Resolving imports...";
+            
+            try {
+                const code = editor.getValue();
+                
+                // 1. Resolve Imports
+                const resolver = new DennerBundle.BrowserResolver();
+                const importRegex = /import\s+"([^"]+)"/g;
+                let match;
+                while ((match = importRegex.exec(code)) !== null) {
+                    await resolver.resolve(match[1], window.location.href);
                 }
-            }, 50);
+
+                outputDiv.innerText = "Compiling...";
+                const fullSource = resolver.getFullSource(code);
+
+                // 2. Tokenize & Parse
+                const lexer = new DennerBundle.Lexer(fullSource);
+                const tokens = lexer.tokenize();
+                const parser = new DennerBundle.Parser(tokens);
+                const ast = parser.parse();
+                
+                // 3. Transpile
+                const jscodegen = new DennerBundle.JSCodeGenerator(ast);
+                const jsCode = jscodegen.generate();
+
+                // 4. Execute
+                outputDiv.innerText = "";
+                let logs = "";
+                const denner_system_print = (val) => {
+                    logs += (val === undefined ? "" : val.toString()) + "\n";
+                    outputDiv.innerText = logs;
+                };
+
+                const denner_stdlib = {
+                    os: {
+                        name: () => "browser",
+                        env: () => "undefined"
+                    },
+                    path: {
+                        join: (a, b) => {
+                            if (!a) return b;
+                            if (a.endsWith('/')) return a + b;
+                            return a + '/' + b;
+                        }
+                    },
+                    net: {
+                        get: async (url) => { const r = await fetch(url); return await r.text(); }
+                    },
+                    cli: {
+                        input: async (promptText) => prompt(promptText) || ""
+                    },
+                    gui: {
+                        alert: (msg) => alert(msg)
+                    }
+                };
+
+                const executor = Object.getPrototypeOf(async function(){}).constructor("denner_system_print", "denner", jsCode);
+                await executor(denner_system_print, denner_stdlib);
+
+                if (!logs) outputDiv.innerText = "(No output)";
+            } catch (e) {
+                outputDiv.innerHTML = `<span class="text-rose-400 font-bold">Error:</span>\n${e.message}`;
+            } finally {
+                runBtn.disabled = false;
+                runBtn.innerHTML = originalText;
+                lucide.createIcons();
+            }
         });
 
         clearBtn.addEventListener('click', () => {
