@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denner Language Wiki</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0f111a;
+            color: #cbd5e1;
+        }
+
+        .glass {
+            background: rgba(30, 34, 51, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 1.25rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Syntax Highlighting Colors */
+        .kw { color: #c678dd; font-weight: bold; } /* Keyword */
+        .ty { color: #e5c07b; } /* Type */
+        .id { color: #e06c75; } /* Identifier */
+        .st { color: #98c379; } /* String */
+        .nm { color: #d19a66; } /* Number */
+        .cm { color: #5c6370; font-style: italic; } /* Comment */
+        .op { color: #56b6c2; } /* Operator */
+        .fn { color: #61afef; } /* Function */
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .hidden-lang { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col gap-6 max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <header class="glass rounded-2xl p-6 flex flex-col md:flex-row gap-4 items-center justify-between shadow-2xl sticky top-4 z-50">
+        <div class="flex items-center gap-4">
+            <div class="bg-white p-2 rounded-xl flex items-center justify-center">
+                <img src="logo.png" alt="Denner Logo" class="w-8 h-8 object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png'" />
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent tracking-tight leading-none">
+                    <span class="lang-en block">Syntax Reference</span>
+                    <span class="lang-ja hidden-lang block">構文リファレンス</span>
+                </h1>
+                <span class="text-xs text-slate-500 uppercase tracking-widest font-bold">Denner Official Wiki</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button id="langToggle" class="flex items-center gap-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 px-4 py-2.5 rounded-xl font-bold transition-all shadow border border-pink-500/20 active:scale-95">
+                <i data-lucide="languages" class="w-5 h-5"></i>
+                <span id="langText">EN / 日本語</span>
+            </button>
+            <a href="index.html" class="flex items-center gap-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg active:scale-95 border border-indigo-500/20">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                <span class="lang-en">Back</span>
+                <span class="lang-ja hidden-lang">戻る</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="space-y-8 pb-12">
+
+        <!-- Core Syntax -->
+        <section class="glass rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="code" class="text-pink-400 w-6 h-6"></i>
+                <h2 class="text-2xl font-bold text-white">
+                    <span class="lang-en">1. Variables & Types</span>
+                    <span class="lang-ja hidden-lang">1. 変数と型</span>
+                </h2>
+            </div>
+            <p class="text-slate-400 mb-4 leading-relaxed">
+                <span class="lang-en">Denner supports both dynamic and static typing. Available types are:</span>
+                <span class="lang-ja hidden-lang">Dennerは動的型付けと静的型付けの両方をサポートしています。利用可能な型は次のとおりです：</span>
+                <code class="text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded">num</code>, <code class="text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded">str</code>, <code class="text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded">bool</code>, <code class="text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded">list</code>, <code class="text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded">obj</code>.
+            </p>
+            <pre><code><span class="cm">// Dynamic typing (Type Inference)</span>
+<span class="id">message</span> <span class="op">=</span> <span class="st">"Welcome to Denner"</span>
+<span class="id">count</span> <span class="op">=</span> <span class="nm">42</span>
+
+<span class="cm">// Static typing</span>
+<span class="id">age</span><span class="op">:</span> <span class="ty">num</span> <span class="op">=</span> <span class="nm">25</span>
+<span class="id">is_admin</span><span class="op">:</span> <span class="ty">bool</span> <span class="op">=</span> <span class="kw">true</span></code></pre>
+        </section>
+
+        <!-- Functions -->
+        <section class="glass rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="box" class="text-indigo-400 w-6 h-6"></i>
+                <h2 class="text-2xl font-bold text-white">
+                    <span class="lang-en">2. Functions</span>
+                    <span class="lang-ja hidden-lang">2. 関数</span>
+                </h2>
+            </div>
+            <p class="text-slate-400 mb-4 leading-relaxed">
+                <span class="lang-en">Functions are declared using the <code>function</code> keyword. Parameter and return types are strongly recommended for safety but not strictly required.</span>
+                <span class="lang-ja hidden-lang">関数は <code>function</code> キーワードを使用して宣言します。引数と戻り値の型指定は安全性のために推奨されますが、必須ではありません。</span>
+            </p>
+            <pre><code><span class="kw">function</span> <span class="fn">greet</span>(<span class="id">name</span><span class="op">:</span> <span class="ty">str</span>)<span class="op">:</span> <span class="ty">str</span> {
+  <span class="kw">return</span> <span class="st">"Hello, "</span> <span class="op">+</span> <span class="id">name</span>
+}
+
+<span class="cm">// <span class="lang-en">You can also use inline string formatting!</span><span class="lang-ja hidden-lang">文字列への変数の埋め込みも可能です！</span></span>
+<span class="kw">function</span> <span class="fn">magic</span>(<span class="id">val</span><span class="op">:</span> <span class="ty">num</span>) {
+  <span class="fn">log.print</span>(<span class="st">"Result is: {val * 10}"</span>)
+}</code></pre>
+        </section>
+
+        <!-- Control Flow -->
+        <section class="glass rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="git-branch" class="text-emerald-400 w-6 h-6"></i>
+                <h2 class="text-2xl font-bold text-white">
+                    <span class="lang-en">3. Control Flow & Loops</span>
+                    <span class="lang-ja hidden-lang">3. 制御構文とループ</span>
+                </h2>
+            </div>
+            <p class="text-slate-400 mb-4 leading-relaxed">
+                <span class="lang-en">Conditions do not require parentheses. Code blocks must be enclosed in curly braces <code>{}</code>.</span>
+                <span class="lang-ja hidden-lang">条件式に括弧は不要です。コードブロックは波括弧 <code>{}</code> で囲む必要があります。</span>
+            </p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">If / Else</h3>
+                    <pre><code><span class="kw">if</span> <span class="id">temperature</span> <span class="op">></span> <span class="nm">30</span> {
+  <span class="fn">log.print</span>(<span class="st">"It's hot!"</span>)
+} <span class="kw">else</span> {
+  <span class="fn">log.print</span>(<span class="st">"It's fine"</span>)
+}</code></pre>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">For Loops</h3>
+                    <pre><code><span class="cm">// <span class="lang-en">Range Loop</span><span class="lang-ja hidden-lang">範囲のループ</span></span>
+<span class="kw">for</span> <span class="id">i</span> <span class="kw">in</span> <span class="nm">1</span><span class="op">..</span><span class="nm">5</span> {
+  <span class="fn">log.print</span>(<span class="id">i</span>)
+}
+
+<span class="cm">// <span class="lang-en">Iterable Loop</span><span class="lang-ja hidden-lang">コレクションのループ</span></span>
+<span class="kw">for</span> <span class="id">item</span> <span class="kw">in</span> <span class="id">my_list</span> {
+  <span class="fn">log.print</span>(<span class="id">item</span>)
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Standard Library -->
+        <section class="glass rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="layers" class="text-amber-400 w-6 h-6"></i>
+                <h2 class="text-2xl font-bold text-white">
+                    <span class="lang-en">4. Standard Library (Native & JS)</span>
+                    <span class="lang-ja hidden-lang">4. 標準ライブラリ</span>
+                </h2>
+            </div>
+            <p class="text-slate-400 mb-4 leading-relaxed">
+                <span class="lang-en">Denner comes with "batteries included" modules that seamlessly translate to Native C++ commands or Browser JS Polyfills dynamically.</span>
+                <span class="lang-ja hidden-lang">Dennerには強力な標準ライブラリが用意されており、これらはブラウザ（JavaScript）でも、C++環境でも共通のコマンドで動作します。</span>
+            </p>
+            
+            <div class="space-y-4">
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h3 class="font-bold text-pink-300 mb-2 flex items-center gap-2"><i data-lucide="terminal-square" class="w-4 h-4"></i> Logger ( <code class="text-white text-sm">log.print</code> )</h3>
+                    <pre class="bg-black/20 !p-3"><code><span class="fn">log.print</span>(<span class="st">"<span class="lang-en">Outputs to console or terminal</span><span class="lang-ja hidden-lang">コンソール・ターミナルへの文字出力</span>"</span>)</code></pre>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h3 class="font-bold text-blue-300 mb-2 flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4"></i> Operating System ( <code class="text-white text-sm">os.name</code>, <code class="text-white text-sm">os.env</code> )</h3>
+                    <p class="text-sm text-slate-400 mb-2">
+                        <span class="lang-en">Retrieve OS info and access system variables.</span>
+                        <span class="lang-ja hidden-lang">システムのOS情報を取得したり、環境変数へアクセスします。</span>
+                    </p>
+                    <pre class="bg-black/20 !p-3"><code><span class="id">system_name</span> <span class="op">=</span> <span class="fn">os.name</span>() <span class="cm">// 'browser', 'macos', 'windows'</span>
+<span class="id">secret_key</span> <span class="op">=</span> <span class="fn">os.env</span>(<span class="st">"API_KEY"</span>)</code></pre>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h3 class="font-bold text-emerald-300 mb-2 flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i> Networking ( <code class="text-white text-sm">net.get</code> )</h3>
+                    <p class="text-sm text-slate-400 mb-2">
+                        <span class="lang-en">Executes a GET Request. Uses `fetch()` in JS and `libcurl` in C++. Wait-free asynchronous syntax automatically handled!</span>
+                        <span class="lang-ja hidden-lang">HTTP GET リクエストを実行します。裏側の処理（fetch または curl）はコンパイラが自動で解決するため同期的に書けます！</span>
+                    </p>
+                    <pre class="bg-black/20 !p-3"><code><span class="id">ip</span> <span class="op">=</span> <span class="fn">net.get</span>(<span class="st">"https://api.ipify.org"</span>)</code></pre>
+                </div>
+                
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h3 class="font-bold text-purple-300 mb-2 flex items-center gap-2"><i data-lucide="folder" class="w-4 h-4"></i> Path ( <code class="text-white text-sm">path.join</code> )</h3>
+                    <pre class="bg-black/20 !p-3"><code><span class="id">full_path</span> <span class="op">=</span> <span class="fn">path.join</span>(<span class="st">"folder"</span>, <span class="st">"data.json"</span>)</code></pre>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                    <h3 class="font-bold text-orange-300 mb-2 flex items-center gap-2"><i data-lucide="keyboard" class="w-4 h-4"></i> User Inputs & Alerts ( <code class="text-white text-sm">cli.input</code>, <code class="text-white text-sm">gui.alert</code> )</h3>
+                    <p class="text-sm text-slate-400 mb-2">
+                        <span class="lang-en">`gui.alert` prompts standard browser modals inside JS and opens a native standalone Notification Window when running inside the Native C++ backend!</span>
+                        <span class="lang-ja hidden-lang">ユーザー入力を受けたり、通知を出します。C++ネイティブの場合は、なんと本物のOS通知ウィンドウが表示されます！</span>
+                    </p>
+                    <pre class="bg-black/20 !p-3"><code><span class="id">user_name</span> <span class="op">=</span> <span class="fn">cli.input</span>(<span class="st">"What is your name? : "</span>)
+<span class="fn">gui.alert</span>(<span class="st">"Welcome to Denner, {user_name}!"</span>)</code></pre>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Language Toggle Logic
+        let currentLang = localStorage.getItem("denner_wiki_lang") || "ja";
+        const toggleBtn = document.getElementById("langToggle");
+        
+        function updateLayout() {
+            const enElements = document.querySelectorAll('.lang-en');
+            const jaElements = document.querySelectorAll('.lang-ja');
+
+            if (currentLang === "en") {
+                enElements.forEach(el => el.classList.remove('hidden-lang'));
+                jaElements.forEach(el => el.classList.add('hidden-lang'));
+                document.getElementById("langText").innerText = "Switch to 日本語";
+            } else {
+                jaElements.forEach(el => el.classList.remove('hidden-lang'));
+                enElements.forEach(el => el.classList.add('hidden-lang'));
+                document.getElementById("langText").innerText = "英語 / English";
+            }
+        }
+
+        toggleBtn.addEventListener("click", () => {
+            currentLang = currentLang === "en" ? "ja" : "en";
+            localStorage.setItem("denner_wiki_lang", currentLang);
+            updateLayout();
+        });
+
+        // Init
+        updateLayout();
+    </script>
+</body>
+</html>
