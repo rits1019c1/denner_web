@@ -1,0 +1,30 @@
+// GUI & Interactive CLI Demo
+// Controls: Arrow Keys to move the square
+
+gui.setup(800, 600)
+log.print("🎮 Denner Game Engine Initialized")
+log.print("Use Arrow Keys to move!")
+
+x = 100
+y = 100
+color = "indigo"
+
+// Game Loop
+for i in 0..1000000 {
+    gui.clear("#0f111a")
+    gui.rect(x, y, 50, 50, color)
+    gui.text("Denner Game Engine", 20, 40, "white")
+    gui.text("Position: {x}, {y}", 20, 70, "gray")
+    
+    // Check keys (async in web)
+    k = cli.get_key()
+    if k == "Up" { y = y - 5 }
+    if k == "Down" { y = y + 5 }
+    if k == "Left" { x = x - 5 }
+    if k == "Right" { x = x + 5 }
+    if k == "r" { color = "red" }
+    if k == "g" { color = "green" }
+    if k == "b" { color = "blue" }
+    
+    gui.loop() // Wait for next frame
+}

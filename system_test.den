@@ -1,0 +1,24 @@
+// Denner System & Stdlib Test
+log.print("--- Denner System Test ---")
+
+// 1. OS and Path Info
+cwd = os.cwd()
+log.print("Current Working Directory: {cwd}")
+
+os_name = os.name()
+log.print("Operating System: {os_name}")
+
+// 2. Network Test (Requires -N or -A flag)
+log.print("Attempting to fetch data from GitHub...")
+// Using a simple raw text file for testing
+url = "https://raw.githubusercontent.com/rits1019c1/denner/refs/heads/main/LICENSE"
+content = net.get(url)
+
+if content != "" {
+    log.print("✅ Network Fetch Successful!")
+    // log.print("License Content Snippet: {content}")
+} else {
+    log.print("❌ Network Fetch Failed or Denied")
+}
+
+log.print("--- System Test Finished ---")

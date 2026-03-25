@@ -1,0 +1,3 @@
+// Hello World in Denner
+log.print("Hello, World!")
+log.print("Greetings from the Denner Programming Language! 🚀")

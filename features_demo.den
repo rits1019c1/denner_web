@@ -1,0 +1,34 @@
+// Denner Language Feature Demo
+log.print("--- Denner Programming Language Demo ---")
+
+// 1. Variables and Types
+a = 10
+b = 5.5
+name = "Denner User"
+
+// 2. String Interpolation (Parser-level)
+log.print("Welcome, {name}! Your score is {a + b}")
+
+// 3. Logic and Comparison
+if a > b {
+    log.print("{a} is greater than {b}")
+} else {
+    log.print("{a} is smaller than {b}")
+}
+
+// 4. Functions
+function multiply(x: num, y: num): num {
+    return x * y
+}
+
+result = multiply(a, 100)
+log.print("Result of multiply(a, 100): {result}")
+
+// 5. Loops
+count = 0
+while count < 3 {
+    count = count + 1
+    log.print("Iteration: {count}")
+}
+
+log.print("--- Demo Finished ---")
