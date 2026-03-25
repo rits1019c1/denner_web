@@ -64,6 +64,10 @@
         </div>
 
         <div class="flex items-center gap-3">
+            <a href="about.html" class="flex items-center gap-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-pink-500/20">
+                <i data-lucide="info" class="w-4 h-4"></i>
+                About Denner
+            </a>
             <a href="wiki.html" target="_blank" class="flex items-center gap-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-slate-500/20">
                 <i data-lucide="book-open" class="w-4 h-4"></i>
                 Syntax Wiki
@@ -87,15 +91,31 @@
         </div>
 
         <!-- Output -->
-        <div class="w-1/3 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col transition-all" id="outputPane">
-            <div class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
-                    Console Output
+        <div class="w-1/3 flex flex-col gap-4 overflow-hidden" id="rightPane">
+            <!-- Console -->
+            <div class="flex-1 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col transition-all" id="outputPane">
+                <div class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+                        Console Output
+                    </div>
+                    <button id="clearBtn" class="hover:text-white transition-colors">Clear</button>
                 </div>
-                <button id="clearBtn" class="hover:text-white transition-colors">Clear</button>
+                <div id="output" class="flex-1 p-6 font-mono text-sm overflow-auto text-emerald-400 whitespace-pre-wrap leading-relaxed">Ready. Write code and click Run.</div>
             </div>
-            <div id="output" class="flex-1 p-6 font-mono text-sm overflow-auto text-emerald-400 whitespace-pre-wrap leading-relaxed">Ready. Write code and click Run.</div>
+
+            <!-- Game View (Canvas) -->
+            <div id="gamePane" class="h-1/2 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col hidden border-2 border-indigo-500/30">
+                <div class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="gamepad-2" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        Game Canvas
+                    </div>
+                </div>
+                <div class="flex-1 flex items-center justify-center bg-black overflow-hidden relative">
+                    <canvas id="denner-canvas" class="max-w-full max-h-full"></canvas>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -316,6 +336,21 @@
                     outputDiv.innerText = logs;
                 };
 
+                const denner_canvas = document.getElementById('denner-canvas');
+                const gamePane = document.getElementById('gamePane');
+                let ctx = null;
+                let lastKey = "";
+                
+                const keyListener = (e) => {
+                    const map = {
+                        "ArrowUp": "Up", "ArrowDown": "Down", 
+                        "ArrowLeft": "Left", "ArrowRight": "Right",
+                        " ": "Space"
+                    };
+                    lastKey = map[e.key] || e.key;
+                };
+                window.addEventListener('keydown', keyListener);
+
                 const denner_stdlib = {
                     os: {
                         name: () => "browser",
@@ -332,15 +367,58 @@
                         get: async (url) => { const r = await fetch(url); return await r.text(); }
                     },
                     cli: {
-                        input: async (promptText) => prompt(promptText) || ""
+                        input: async (promptText) => prompt(promptText) || "",
+                        get_key: async () => {
+                            return new Promise(resolve => {
+                                const check = () => {
+                                    if (lastKey) {
+                                        const k = lastKey;
+                                        lastKey = "";
+                                        resolve(k);
+                                    } else {
+                                        requestAnimationFrame(check);
+                                    }
+                                };
+                                check();
+                            });
+                        }
                     },
                     gui: {
-                        alert: (msg) => alert(msg)
+                        alert: (msg) => alert(msg),
+                        setup: (w, h) => {
+                            gamePane.classList.remove('hidden');
+                            denner_canvas.width = w;
+                            denner_canvas.height = h;
+                            ctx = denner_canvas.getContext('2d');
+                        },
+                        clear: (color) => {
+                            if (!ctx) return;
+                            ctx.fillStyle = color;
+                            ctx.fillRect(0, 0, denner_canvas.width, denner_canvas.height);
+                        },
+                        rect: (x, y, w, h, color) => {
+                            if (!ctx) return;
+                            ctx.fillStyle = color;
+                            ctx.fillRect(x, y, w, h);
+                        },
+                        text: (txt, x, y, color) => {
+                            if (!ctx) return;
+                            ctx.fillStyle = color;
+                            ctx.font = "20px JetBrains Mono";
+                            ctx.fillText(txt, x, y);
+                        },
+                        loop: async () => {
+                            return new Promise(resolve => requestAnimationFrame(resolve));
+                        }
                     }
                 };
 
                 const executor = Object.getPrototypeOf(async function(){}).constructor("denner_system_print", "denner", jsCode);
-                await executor(denner_system_print, denner_stdlib);
+                try {
+                    await executor(denner_system_print, denner_stdlib);
+                } finally {
+                    window.removeEventListener('keydown', keyListener);
+                }
 
                 if (!logs) outputDiv.innerText = "(No output)";
             } catch (e) {

@@ -825,7 +825,7 @@ var DennerBundle = (() => {
               }
               if (["os", "path", "net", "cli", "gui"].includes(objName)) {
                 let callStr = `denner.${objName}.${propName}(${args})`;
-                if (objName === "net" || objName === "cli" && propName === "input") {
+                if (objName === "net" || objName === "cli" && (propName === "input" || propName === "get_key") || objName === "gui" && propName === "loop") {
                   return `(await ${callStr})`;
                 }
                 return callStr;

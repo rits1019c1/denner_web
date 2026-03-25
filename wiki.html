@@ -212,13 +212,30 @@
                 </div>
 
                 <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                    <h3 class="font-bold text-orange-300 mb-2 flex items-center gap-2"><i data-lucide="keyboard" class="w-4 h-4"></i> User Inputs & Alerts ( <code class="text-white text-sm">cli.input</code>, <code class="text-white text-sm">gui.alert</code> )</h3>
+                    <h3 class="font-bold text-orange-300 mb-2 flex items-center gap-2"><i data-lucide="keyboard" class="w-4 h-4"></i> User Inputs & Alerts ( <code class="text-white text-sm">cli.input</code>, <code class="text-white text-sm">cli.get_key</code>, <code class="text-white text-sm">gui.alert</code> )</h3>
                     <p class="text-sm text-slate-400 mb-2">
                         <span class="lang-en">`gui.alert` prompts standard browser modals inside JS and opens a native standalone Notification Window when running inside the Native C++ backend!</span>
                         <span class="lang-ja hidden-lang">ユーザー入力を受けたり、通知を出します。C++ネイティブの場合は、なんと本物のOS通知ウィンドウが表示されます！</span>
+                        <span class="lang-en">`cli.get_key` reads raw keyboard input without waiting for "Enter". Perfect for controls!</span>
+                        <span class="lang-ja hidden-lang">`cli.get_key` は Enterキーを待たずに、押した瞬間にキーを1文字取得します。操作系に最適です。</span>
                     </p>
                     <pre class="bg-black/20 !p-3"><code><span class="id">user_name</span> <span class="op">=</span> <span class="fn">cli.input</span>(<span class="st">"What is your name? : "</span>)
+<span class="id">key</span> <span class="op">=</span> <span class="fn">cli.get_key</span>() <span class="cm">// 'Up', 'Down', 'Left', 'Right', 'Space', 'a', etc.</span>
 <span class="fn">gui.alert</span>(<span class="st">"Welcome to Denner, {user_name}!"</span>)</code></pre>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-indigo-500/30">
+                    <h3 class="font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="gamepad-2" class="w-4 h-4"></i> Interactive GUI & Games ( <code class="text-white text-sm">gui.setup</code>, <code class="text-white text-sm">gui.loop</code> )</h3>
+                    <p class="text-sm text-slate-400 mb-2">
+                        <span class="lang-en">Specialized Canvas-based API for drawing and game loops. Web Playground only.</span>
+                        <span class="lang-ja hidden-lang">Canvasベースの描画・ゲームループAPIです。Web Playground上でフル機能を利用できます。</span>
+                    </p>
+                    <pre class="bg-black/20 !p-3"><code><span class="fn">gui.setup</span>(<span style="color: #d19a66">800</span>, <span style="color: #d19a66">600</span>)
+<span class="kw">for</span> <span class="id">i</span> <span class="kw">in</span> <span style="color: #d19a66">0</span>..<span style="color: #d19a66">100</span> {
+  <span class="fn">gui.clear</span>(<span class="st">"white"</span>)
+  <span class="fn">gui.rect</span>(<span class="nm">10</span>, <span class="nm">10</span>, <span class="nm">50</span>, <span class="nm">50</span>, <span class="st">"red"</span>)
+  <span class="fn">gui.loop</span>() <span class="cm">// Wait for requestAnimationFrame</span>
+}</code></pre>
                 </div>
             </div>
         </section>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Denner - The Multi-Backend Language</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0f111a;
+            color: #cbd5e1;
+            scroll-behavior: smooth;
+        }
+
+        .glass {
+            background: rgba(30, 34, 51, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 17, 26, 0) 70%);
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 1.25rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.875rem;
+        }
+
+        code { font-family: 'JetBrains Mono', monospace; }
+
+        .hidden-lang { display: none !important; }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="hero-gradient fixed inset-0 -z-10"></div>
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto px-6 pt-8 pb-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-white p-2 rounded-xl">
+                <img src="logo.png" alt="Logo" class="w-7 h-7 object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png'">
+            </div>
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">Denner</h1>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button id="langToggle" class="text-sm font-bold text-slate-400 hover:text-white transition-colors">EN / 日本語</button>
+            <a href="index.html" class="bg-indigo-500 hover:bg-indigo-400 text-white px-5 py-2 rounded-xl font-medium transition-all shadow-lg active:scale-95">
+                <span class="lang-en">Playground</span>
+                <span class="lang-ja hidden-lang">プレイグラウンド</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <h2 class="text-5xl md:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+            <span class="lang-en">Code Once,<br><span class="text-indigo-400">Run Everywhere.</span></span>
+            <span class="lang-ja hidden-lang">一度書けば、<br><span class="text-indigo-400">どこでも動く。</span></span>
+        </h2>
+        <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <span class="lang-en">Denner is a lightweight programming language that transpiles to high-performance C++ and browser-native JavaScript.</span>
+            <span class="lang-ja hidden-lang">Dennerは、高性能なC++とブラウザネイティブのJavaScriptへコンパイルされる、軽量でパワフルなプログラミング言語です。</span>
+        </p>
+        
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="#install" class="bg-white text-slate-900 px-8 py-3 rounded-2xl font-bold text-lg hover:bg-slate-200 transition-all active:scale-95">
+                <span class="lang-en">Get Started</span>
+                <span class="lang-ja hidden-lang">今すぐ始める</span>
+            </a>
+            <a href="wiki.html" class="glass text-white px-8 py-3 rounded-2xl font-bold text-lg hover:bg-white/5 transition-all active:scale-95">
+                <span class="lang-en">View Wiki</span>
+                <span class="lang-ja hidden-lang">ドキュメントをみる</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-3 gap-8">
+        <div class="glass p-8 rounded-3xl card-hover transition-all duration-300">
+            <div class="w-12 h-12 bg-pink-500/20 rounded-2xl flex items-center justify-center text-pink-400 mb-6">
+                <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-4">
+                <span class="lang-en">Dual Backend</span>
+                <span class="lang-ja hidden-lang">デュアルバックエンド</span>
+            </h3>
+            <p class="text-slate-400 leading-relaxed">
+                <span class="lang-en">Compile to C++14 for native speed or JavaScript for web compatibility.</span>
+                <span class="lang-ja hidden-lang">ネイティブ速度のC++14と、Web互換のJavaScript。1つのコードで両方の世界へ。</span>
+            </p>
+        </div>
+
+        <div class="glass p-8 rounded-3xl card-hover transition-all duration-300">
+            <div class="w-12 h-12 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400 mb-6">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-4">
+               <span class="lang-en">Zero Dependency</span>
+               <span class="lang-ja hidden-lang">ゼロ依存関係</span>
+            </h3>
+            <p class="text-slate-400 leading-relaxed">
+                <span class="lang-en">The C++ runtime is header-only and provides safe string interpolation natively.</span>
+                <span class="lang-ja hidden-lang">C++ランタイムはヘッダーのみ。文字列補間や数値計算を安全に処理します。</span>
+            </p>
+        </div>
+
+        <div class="glass p-8 rounded-3xl card-hover transition-all duration-300">
+            <div class="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 mb-6">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-4">
+                <span class="lang-en">Batteries Included</span>
+                <span class="lang-ja hidden-lang">充実の標準ライブラリ</span>
+            </h3>
+            <p class="text-slate-400 leading-relaxed">
+                <span class="lang-en">Built-in modules for OS, Path, Network, and even 2D GUI for Games.</span>
+                <span class="lang-ja hidden-lang">OS情報、パス操作、ネットワーク通信、さらにはゲーム用の2D GUIまで標準装備。</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Installation -->
+    <section id="install" class="max-w-4xl mx-auto px-6 py-20">
+        <div class="glass p-10 rounded-[2.5rem] border-indigo-500/20">
+            <div class="flex items-center gap-4 mb-8">
+                <i data-lucide="terminal" class="text-indigo-400 w-8 h-8"></i>
+                <h2 class="text-3xl font-bold text-white">
+                    <span class="lang-en">Fast Installation</span>
+                    <span class="lang-ja hidden-lang">爆速導入</span>
+                </h2>
+            </div>
+            
+            <p class="text-slate-400 mb-6 font-medium">
+                <span class="lang-en">Denner CLI for macOS / Linux / WSL:</span>
+                <span class="lang-ja hidden-lang">macOS / Linux / WSL での導入コマンド:</span>
+            </p>
+
+            <div class="relative group">
+                <pre class="!bg-black/60 !border-white/10 text-indigo-300 text-lg"><code>curl -fsSL https://raw.githubusercontent.com/rits1019c1/denner/refs/heads/main/install.sh | sh</code></pre>
+                <button onclick="navigator.clipboard.writeText('curl -fsSL https://raw.githubusercontent.com/rits1019c1/denner/refs/heads/main/install.sh | sh')" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all opacity-0 group-hover:opacity-100">
+                    <i data-lucide="copy" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-slate-500 mt-6 text-sm">
+                <span class="lang-en">After installation, try <code>denner run hello.den</code> to see the magic.</span>
+                <span class="lang-ja hidden-lang">インストール後、<code>denner run hello.den</code> ですぐに実行できます。</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Code Sample -->
+    <section class="max-w-6xl mx-auto px-6 py-20">
+        <h2 class="text-4xl font-bold text-white mb-12 text-center">
+            <span class="lang-en">Sample Code</span>
+            <span class="lang-ja hidden-lang">サンプルコード</span>
+        </h2>
+        
+        <div class="grid lg:grid-cols-2 gap-8">
+            <div class="space-y-4">
+                <h4 class="text-indigo-400 font-bold flex items-center gap-2">
+                    <i data-lucide="gamepad-2" class="w-5 h-5"></i> 
+                    <span class="lang-en">Modern Game Loop</span>
+                    <span class="lang-ja hidden-lang">モダンなゲームループ</span>
+                </h4>
+                <pre class="glass !p-6 h-full shadow-inner"><code><span style="color: #c678dd">gui</span>.setup(<span style="color: #d19a66">800</span>, <span style="color: #d19a66">600</span>)
+<span style="color: #e06c75">x</span> = <span style="color: #d19a66">100</span>
+
+<span style="color: #c678dd">for</span> i <span style="color: #c678dd">in</span> <span style="color: #d19a66">0</span>..<span style="color: #d19a66">100000</span> {
+    <span style="color: #c678dd">gui</span>.clear(<span style="color: #98c379">"black"</span>)
+    <span style="color: #c678dd">gui</span>.rect(x, <span style="color: #d19a66">100</span>, <span style="color: #d19a66">50</span>, <span style="color: #d19a66">50</span>, <span style="color: #98c379">"red"</span>)
+    
+    <span style="color: #e06c75">key</span> = <span style="color: #c678dd">cli</span>.get_key()
+    <span style="color: #c678dd">if</span> key == <span style="color: #98c379">"Right"</span> { <span style="color: #e06c75">x</span> = x + <span style="color: #d19a66">5</span> }
+    
+    <span style="color: #c678dd">gui</span>.loop() <span style="color: #5c6370">// Wait for next frame</span>
+}</code></pre>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-emerald-400 font-bold flex items-center gap-2">
+                    <i data-lucide="network" class="w-5 h-5"></i>
+                    <span class="lang-en">Sync Networking</span>
+                    <span class="lang-ja hidden-lang">同期的なネットワーク処理</span>
+                </h4>
+                <pre class="glass !p-6 h-full shadow-inner"><code><span style="color: #5c6370">// No callbacks, no complex chains.</span>
+<span style="color: #e06c75">url</span> = <span style="color: #98c379">"https://api.github.com/zen"</span>
+
+<span style="color: #c678dd">log</span>.print(<span style="color: #98c379">"Fetching wisdom..."</span>)
+<span style="color: #e06c75">data</span> = <span style="color: #c678dd">net</span>.get(url)
+
+<span style="color: #c678dd">log</span>.print(<span style="color: #98c379">"Zen: {data}"</span>)
+<span style="color: #c678dd">log</span>.print(<span style="color: #98c379">"Current OS: {os.name()}"</span>)</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto px-6 py-12 border-t border-white/5 text-center text-slate-500">
+        <p>&copy; 2026 Denner Programming Language. Created with ❤️ for Developers.</p>
+        <div class="flex items-center justify-center gap-6 mt-6">
+            <a href="https://github.com/rits1019c1/denner" class="hover:text-white transition-colors">GitHub</a>
+            <a href="wiki.html" class="hover:text-white transition-colors">Wiki</a>
+            <a href="index.html" class="hover:text-white transition-colors">Playground</a>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Language Toggle Logic
+        let currentLang = localStorage.getItem("denner_about_lang") || "ja";
+        const toggleBtn = document.getElementById("langToggle");
+        
+        function updateLayout() {
+            const enElements = document.querySelectorAll('.lang-en');
+            const jaElements = document.querySelectorAll('.lang-ja');
+
+            if (currentLang === "en") {
+                enElements.forEach(el => el.classList.remove('hidden-lang'));
+                jaElements.forEach(el => el.classList.add('hidden-lang'));
+                toggleBtn.innerText = "Switch to 日本語";
+            } else {
+                jaElements.forEach(el => el.classList.remove('hidden-lang'));
+                enElements.forEach(el => el.classList.add('hidden-lang'));
+                toggleBtn.innerText = "English / 英語";
+            }
+        }
+
+        toggleBtn.addEventListener("click", () => {
+            currentLang = currentLang === "en" ? "ja" : "en";
+            localStorage.setItem("denner_about_lang", currentLang);
+            updateLayout();
+        });
+
+        updateLayout();
+    </script>
+</body>
+</html>
