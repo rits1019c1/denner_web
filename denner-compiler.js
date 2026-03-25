@@ -20,6 +20,7 @@ var DennerBundle = (() => {
   // src/compiler/browser-entry.ts
   var browser_entry_exports = {};
   __export(browser_entry_exports, {
+    BrowserResolver: () => BrowserResolver,
     JSCodeGenerator: () => JSCodeGenerator,
     Lexer: () => Lexer,
     Parser: () => Parser
@@ -815,9 +816,20 @@ var DennerBundle = (() => {
           const args = call.arguments.map((a) => this.generateExpression(a)).join(", ");
           if (call.callee.type === "MemberExpression") {
             const mem = call.callee;
-            if (mem.object.type === "Identifier" && mem.object.name === "log" && mem.property.name === "print") {
-              if (call.arguments.length === 0) return `denner_system_print("")`;
-              return `denner_system_print(${args})`;
+            if (mem.object.type === "Identifier") {
+              const objName = mem.object.name;
+              const propName = mem.property.name;
+              if (objName === "log" && propName === "print") {
+                if (call.arguments.length === 0) return `denner_system_print("")`;
+                return `denner_system_print(${args})`;
+              }
+              if (["os", "path", "net", "cli", "gui"].includes(objName)) {
+                let callStr = `denner.${objName}.${propName}(${args})`;
+                if (objName === "net" || objName === "cli" && propName === "input") {
+                  return `(await ${callStr})`;
+                }
+                return callStr;
+              }
             }
           }
           return `${this.generateExpression(call.callee)}(${args})`;
@@ -828,6 +840,50 @@ var DennerBundle = (() => {
         }
       }
       throw new Error(`Unknown expression type: ${expr.type}`);
+    }
+  };
+
+  // src/compiler/browser-resolver.ts
+  var BrowserResolver = class {
+    constructor() {
+      this.visited = /* @__PURE__ */ new Set();
+      this.modules = /* @__PURE__ */ new Map();
+    }
+    async resolve(sourcePath, basePath = "") {
+      const isUrl = sourcePath.startsWith("http://") || sourcePath.startsWith("https://");
+      let absolutePath;
+      try {
+        absolutePath = isUrl ? sourcePath : new URL(sourcePath, basePath).href;
+      } catch (e) {
+        throw new Error(`Invalid URL or path: ${sourcePath}`);
+      }
+      if (this.visited.has(absolutePath)) return;
+      this.visited.add(absolutePath);
+      const response = await fetch(absolutePath);
+      if (!response.ok) throw new Error(`Failed to fetch ${absolutePath}: ${response.status}`);
+      const sourceCode = await response.text();
+      this.modules.set(absolutePath, sourceCode);
+      const importRegex = /import\s+"([^"]+)"/g;
+      let match;
+      while ((match = importRegex.exec(sourceCode)) !== null) {
+        const depPath = match[1];
+        const nextBase = new URL(".", absolutePath).href;
+        await this.resolve(depPath, nextBase);
+      }
+    }
+    getFullSource(rootSource) {
+      let fullSource = "";
+      for (const [path, source] of this.modules.entries()) {
+        fullSource += `
+// --- module: ${path} ---
+${source}
+`;
+      }
+      fullSource += `
+// --- root code ---
+${rootSource}
+`;
+      return fullSource;
     }
   };
 
