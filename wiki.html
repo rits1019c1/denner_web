@@ -101,10 +101,18 @@
             <pre><code><span class="cm">// Dynamic typing (Type Inference)</span>
 <span class="id">message</span> <span class="op">=</span> <span class="st">"Welcome to Denner"</span>
 <span class="id">count</span> <span class="op">=</span> <span class="nm">42</span>
+<span class="id">negative_val</span> <span class="op">=</span> <span class="op">-</span><span class="nm">20</span> <span class="cm">// Unary minus supported</span>
 
 <span class="cm">// Static typing</span>
 <span class="id">age</span><span class="op">:</span> <span class="ty">num</span> <span class="op">=</span> <span class="nm">25</span>
-<span class="id">is_admin</span><span class="op">:</span> <span class="ty">bool</span> <span class="op">=</span> <span class="kw">true</span></code></pre>
+<span class="id">is_admin</span><span class="op">:</span> <span class="ty">bool</span> <span class="op">=</span> <span class="kw">true</span>
+
+<span class="cm">// <span class="lang-en">Reactive Binding</span><span class="lang-ja hidden-lang">リアクティブ変数の宣言</span></span>
+<span class="id">score</span><span class="op">:</span> <span class="ty">num</span> <span class="kw">observe</span> <span class="op">=</span> <span class="nm">0</span> <span class="cm">// Updates UI automatically</span>
+
+<span class="cm">// <span class="lang-en">List Literals</span><span class="lang-ja hidden-lang">リスト（配列）リテラル</span></span>
+<span class="id">enemies</span> <span class="op">=</span> []
+<span class="id">points</span> <span class="op">=</span> [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>]</code></pre>
         </section>
 
         <!-- Functions -->
@@ -122,6 +130,11 @@
             </p>
             <pre><code><span class="kw">function</span> <span class="fn">greet</span>(<span class="id">name</span><span class="op">:</span> <span class="ty">str</span>)<span class="op">:</span> <span class="ty">str</span> {
   <span class="kw">return</span> <span class="st">"Hello, "</span> <span class="op">+</span> <span class="id">name</span>
+}
+
+<span class="cm">// <span class="lang-en">Return type is optional (defaults to void)</span><span class="lang-ja hidden-lang">戻り値の型は省略可能です</span></span>
+<span class="kw">function</span> <span class="fn">spawn</span>() {
+  <span class="fn">gui.rect</span>(<span class="nm">10</span>, <span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">20</span>, <span class="st">"red"</span>)
 }
 
 <span class="cm">// <span class="lang-en">You can also use inline string formatting!</span><span class="lang-ja hidden-lang">文字列への変数の埋め込みも可能です！</span></span>

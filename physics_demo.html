@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>physics_demo.den - Denner Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Outfit:wght@400;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #fff; overflow: hidden; }
+        .glass { background: rgba(30,30,40,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        #console { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #10b981; }
+    </style>
+</head>
+<body class="h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-3xl flex flex-col gap-4 h-full">
+        <!-- Header -->
+        <div class="glass p-4 rounded-2xl flex items-center justify-between shadow-xl flex-wrap gap-2">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">physics_demo.den</h1>
+            <div class="flex gap-2 items-center flex-wrap" id="state-badges">
+                <div class="px-2 py-1 bg-white/10 rounded-md text-[10px] font-mono"><span class="text-slate-400">score:</span> <span data-denner-bind="score">0</span></div><div class="px-2 py-1 bg-white/10 rounded-md text-[10px] font-mono"><span class="text-slate-400">msg:</span> <span data-denner-bind="msg">0</span></div>
+                <div class="text-xs text-slate-500 font-mono tracking-widest uppercase">Powered by Denner Engine</div>
+            </div>
+        </div>
+
+        <!-- Desktop Area -->
+        <div class="flex-1 flex gap-4 overflow-hidden">
+            <!-- Canvas -->
+            <div class="flex-1 glass rounded-2xl p-2 flex items-center justify-center bg-black overflow-hidden">
+                <canvas id="denner-canvas" class="max-w-full max-h-full"></canvas>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const outputDiv = document.getElementById('console');
+        const canvas = document.getElementById('denner-canvas');
+        // ctx is declared in outer scope so gui.setup can assign it
+        let ctx = null;
+        let lastKey = "";
+
+        const denner_system_print = (val) => {
+            const str = (val === undefined ? "" : val.toString());
+            if (outputDiv) {
+                outputDiv.innerText += str + "\n";
+                outputDiv.scrollTop = outputDiv.scrollHeight;
+            } else {
+                console.log(str);
+            }
+        };
+
+        // --- Physics Engine ---
+        const physicsObjects = [];
+
+        class DennerObject {
+            constructor(type, x, y, w, h, extra) {
+                this.type = type;
+                this.x = x; this.y = y; this.w = w; this.h = h;
+                this.vx = 0; this.vy = 0;
+                this.physicsEnabled = false;
+                this.gravity = 0;
+                this.color = extra.color || "#fff";
+                this.img = extra.img || null;
+                this.onCollision = null;
+                physicsObjects.push(this);
+            }
+            enablePhysics(config) {
+                config = config || {};
+                this.physicsEnabled = true;
+                this.gravity = (typeof config.gravity === 'number') ? config.gravity : 9.8;
+                return this;
+            }
+            on(event, cb) {
+                if (event === 'collision') this.onCollision = cb;
+                return this;
+            }
+            update() {
+                if (!this.physicsEnabled) return;
+                this.vy += this.gravity * 0.016; // 60fps delta
+                this.x += this.vx;
+                this.y += this.vy;
+                if (canvas && this.y + this.h > canvas.height) {
+                    this.y = canvas.height - this.h;
+                    this.vy *= -0.6;
+                    if (Math.abs(this.vy) < 0.5) this.vy = 0;
+                    if (this.onCollision) this.onCollision({ target: "floor" });
+                }
+            }
+            draw() {
+                if (!ctx) return;
+                if (this.type === 'rect') {
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x, this.y, this.w, this.h);
+                } else if (this.type === 'image' && this.img && this.img.complete) {
+                    ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+                }
+            }
+        }
+
+        // --- Reactivity ---
+        const denner_state = new Proxy({}, {
+            set(target, prop, value) {
+                target[prop] = value;
+                document.querySelectorAll('[data-denner-bind="' + prop + '"]').forEach(el => {
+                    el.textContent = value;
+                });
+                return true;
+            },
+            get(target, prop) {
+                return target[prop];
+            }
+        });
+
+        // Key handling
+        window.addEventListener('keydown', (e) => {
+            const map = { "ArrowUp": "Up", "ArrowDown": "Down", "ArrowLeft": "Left", "ArrowRight": "Right", " ": "Space" };
+            lastKey = map[e.key] || e.key;
+        });
+        window.addEventListener('keyup', () => { lastKey = ""; });
+
+        const denner = {
+            os: { name: () => "web", env: () => "" },
+            path: { join: (a, b) => a + "/" + b },
+            net: { get: async (url) => { const r = await fetch(url); return await r.text(); } },
+            cli: {
+                input: async (txt) => prompt(txt) || "",
+                get_key: async () => new Promise(resolve => {
+                    const check = () => {
+                        if (lastKey) { const k = lastKey; lastKey = ""; resolve(k); }
+                        else requestAnimationFrame(check);
+                    };
+                    check();
+                })
+            },
+            gui: {
+                setup: (w, h) => {
+                    canvas.width = w;
+                    canvas.height = h;
+                    ctx = canvas.getContext('2d');
+                },
+                clear: (c) => { if (!ctx) return; ctx.fillStyle = c; ctx.fillRect(0, 0, canvas.width, canvas.height); },
+                rect: (x, y, w, h, c) => new DennerObject('rect', x, y, w, h, { color: c }),
+                image: (url, x, y, w, h) => {
+                    const img = new Image();
+                    img.src = url;
+                    return new DennerObject('image', x, y, w, h, { img });
+                },
+                text: (t, x, y, c) => {
+                    if (!ctx) return;
+                    ctx.fillStyle = c;
+                    ctx.font = "18px 'JetBrains Mono', monospace";
+                    ctx.fillText(t, x, y);
+                },
+                loop: () => new Promise(r => {
+                    // Apply key-based movement to the first rect-type object (treated as the player)
+                    const player = physicsObjects.find(o => o.type === 'rect' && o.gravity === 0);
+                    if (player) {
+                        if (lastKey === 'Left') player.vx = -6;
+                        else if (lastKey === 'Right') player.vx = 6;
+                        else player.vx = 0;
+                        // Clamp player to canvas bounds
+                        if (canvas) {
+                            if (player.x < 0) player.x = 0;
+                            if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
+                        }
+                    }
+                    physicsObjects.forEach(o => o.update());
+                    physicsObjects.forEach(o => o.draw());
+                    requestAnimationFrame(r);
+                })
+            }
+        };
+
+        const denner_add = (l, r) => {
+            if (typeof l === "string" || typeof r === "string") return String(l) + String(r);
+            return l + r;
+        };
+
+        // Run the Denner program using async Function to support await at top level
+        const code = "denner.gui.setup(800, 600);\ndenner_state.score = 0;\ndenner_state.msg = \"Waiting for collision...\";\nlet box = denner.gui.rect(375, 50, 50, 50, \"#f87171\");\nbox.enablePhysics({ gravity: 9.8 });\nbox.on(\"collision\", function(other) {\n  denner_state.score = (denner_state.score + 1);\n  denner_state.msg = \"Collision detected!\";\n  denner_system_print((\"Bounce! Total score: \" + denner_state.score));\n  \n});\nwhile ((1 < 2)) {\n    denner.gui.clear(\"#0a0a0a\");\n    denner.gui.text(\"Denner Physical Engine\", 20, 40, \"#6366f1\");\n    denner.gui.text((\"Score: \" + denner_state.score), 20, 70, \"#fff\");\n    denner.gui.text(denner_state.msg, 20, 100, \"#94a3b8\");\n    denner.gui.rect(0, 580, 800, 20, \"#1e293b\");\n    (await denner.gui.loop());\n}\n";
+        (new Function('denner', 'denner_state', 'denner_system_print', 'denner_add', '"use strict"; return (async function() {' + code + '})();'))(
+            denner, denner_state, denner_system_print, denner_add
+        ).catch(e => {
+            denner_system_print("Runtime Error: " + e.message);
+            console.error(e);
+        });
+    </script>
+</body>
+</html>
