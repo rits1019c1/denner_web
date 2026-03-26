@@ -244,9 +244,16 @@
                         <span class="lang-ja hidden-lang">Canvasベースの描画・ゲームループAPIです。Web Playground上でフル機能を利用できます。</span>
                     </p>
                     <pre class="bg-black/20 !p-3"><code><span class="fn">gui.setup</span>(<span style="color: #d19a66">800</span>, <span style="color: #d19a66">600</span>)
-<span class="kw">for</span> <span class="id">i</span> <span class="kw">in</span> <span style="color: #d19a66">0</span>..<span style="color: #d19a66">100</span> {
+<span class="kw">while</span> <span class="nm">1</span> <span class="op"><</span> <span class="nm">2</span> {
   <span class="fn">gui.clear</span>(<span class="st">"white"</span>)
   <span class="fn">gui.rect</span>(<span class="nm">10</span>, <span class="nm">10</span>, <span class="nm">50</span>, <span class="nm">50</span>, <span class="st">"red"</span>)
+
+  <span class="cm">// <span class="lang-en">Non-blocking key check</span><span class="lang-ja hidden-lang">非ブロッキングなキー入力</span></span>
+  <span class="id">k</span> <span class="op">=</span> <span class="fn">gui.get_last_key</span>()
+  <span class="kw">if</span> <span class="id">k</span> <span class="op">==</span> <span class="st">"Space"</span> {
+    <span class="fn">log.print</span>(<span class="st">"FIRE!"</span>)
+  }
+
   <span class="fn">gui.loop</span>() <span class="cm">// Wait for requestAnimationFrame</span>
 }</code></pre>
                 </div>
