@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;700&display=swap');
-        
+
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #0f111a;
@@ -23,7 +24,8 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .monaco-editor, .overflow-guard {
+        .monaco-editor,
+        .overflow-guard {
             border-radius: 12px !important;
         }
 
@@ -35,44 +37,54 @@
             width: 8px;
             height: 8px;
         }
+
         ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.1);
+            background: rgba(0, 0, 0, 0.1);
         }
+
         ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
+
 <body class="min-h-screen p-4 flex flex-col gap-4 overflow-hidden h-screen">
 
     <!-- Header -->
     <header class="glass rounded-2xl p-4 flex items-center justify-between shadow-2xl">
         <div class="flex items-center gap-3">
             <div class="bg-white p-2 rounded-xl flex items-center justify-center">
-                <img src="logo.png" alt="Denner Logo" class="w-7 h-7 object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png'" />
+                <img src="logo.png" alt="Denner Logo" class="w-7 h-7 object-contain"
+                    onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png'" />
             </div>
             <div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent tracking-tight leading-none">
+                <h1
+                    class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent tracking-tight leading-none">
                     Denner Web
                 </h1>
-                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Standard Vanilla Edition</span>
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Standard Vanilla
+                    Edition</span>
             </div>
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="about.html" class="flex items-center gap-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-pink-500/20">
+            <a href="about.html"
+                class="flex items-center gap-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-pink-500/20">
                 <i data-lucide="info" class="w-4 h-4"></i>
                 About Denner
             </a>
-            <a href="wiki.html" target="_blank" class="flex items-center gap-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-slate-500/20">
+            <a href="wiki.html" target="_blank"
+                class="flex items-center gap-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all shadow border border-slate-500/20">
                 <i data-lucide="book-open" class="w-4 h-4"></i>
                 Syntax Wiki
             </a>
-            <button id="runBtn" class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+            <button id="runBtn"
+                class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
                 <i data-lucide="play" class="w-5 h-5"></i>
                 Run Code
             </button>
@@ -83,7 +95,8 @@
     <main class="flex-1 flex gap-4 overflow-hidden mb-2">
         <!-- Editor -->
         <div class="flex-1 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col">
-            <div class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center gap-2 text-xs font-mono text-slate-400">
+            <div
+                class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center gap-2 text-xs font-mono text-slate-400">
                 <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
                 main.den
             </div>
@@ -93,20 +106,26 @@
         <!-- Output -->
         <div class="w-1/3 flex flex-col gap-4 overflow-hidden" id="rightPane">
             <!-- Console -->
-            <div class="flex-1 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col transition-all" id="outputPane">
-                <div class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
+            <div class="flex-1 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col transition-all"
+                id="outputPane">
+                <div
+                    class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
                     <div class="flex items-center gap-2">
                         <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
                         Console Output
                     </div>
                     <button id="clearBtn" class="hover:text-white transition-colors">Clear</button>
                 </div>
-                <div id="output" class="flex-1 p-6 font-mono text-sm overflow-auto text-emerald-400 whitespace-pre-wrap leading-relaxed">Ready. Write code and click Run.</div>
+                <div id="output"
+                    class="flex-1 p-6 font-mono text-sm overflow-auto text-emerald-400 whitespace-pre-wrap leading-relaxed">
+                    Ready. Write code and click Run.</div>
             </div>
 
             <!-- Game View (Canvas) -->
-            <div id="gamePane" class="h-1/2 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col hidden border-2 border-indigo-500/30">
-                <div class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
+            <div id="gamePane"
+                class="h-1/2 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col hidden border-2 border-indigo-500/30">
+                <div
+                    class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
                     <div class="flex items-center gap-2">
                         <i data-lucide="gamepad-2" class="w-3.5 h-3.5 text-indigo-400"></i>
                         Game Canvas
@@ -121,7 +140,7 @@
 
     <!-- Monaco Editor Loader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.js"></script>
-    
+
     <!-- Denner Compiler (Bundled) -->
     <script src="./denner-compiler-v132.js"></script>
 
@@ -132,9 +151,9 @@
         let editor;
         const DEFAULT_CODE = `// Denner Vanilla Playground\n\nname = "Denner"\nversion = "2.0"\n\nlog.print("🚀 Running {name} v{version}!")\n\nfunction fib(n: num): num {\n  if n < 2 { return n }\n  return fib(n - 1) + fib(n - 2)\n}\n\nlog.print("Fibonacci(10):")\nlog.print(fib(10))`;
 
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' }});
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
 
-        require(['vs/editor/editor.main'], function() {
+        require(['vs/editor/editor.main'], function () {
             // Register Denner Language
             monaco.languages.register({ id: 'denner' });
             monaco.languages.setMonarchTokensProvider('denner', {
@@ -194,7 +213,7 @@
             });
 
             monaco.languages.registerCompletionItemProvider('denner', {
-                provideCompletionItems: function(model, position) {
+                provideCompletionItems: function (model, position) {
                     const word = model.getWordUntilPosition(position);
                     const range = {
                         startLineNumber: position.lineNumber,
@@ -202,11 +221,11 @@
                         startColumn: word.startColumn,
                         endColumn: word.endColumn
                     };
-                    
+
                     const text = model.getValue();
                     const dynamicSuggestions = [];
                     const seen = new Set();
-                    
+
                     // Regex for functions: function name(
                     const funcRegex = /function\s+([a-zA-Z_$][\w$]*)\s*\(/g;
                     let match;
@@ -230,7 +249,7 @@
                     while ((match = varRegex.exec(text)) !== null) {
                         const name = match[1];
                         if (['if', 'else', 'for', 'while', 'return', 'function', 'import', 'export'].includes(name)) continue;
-                        
+
                         if (!seen.has(name)) {
                             seen.add(name);
                             dynamicSuggestions.push({
@@ -259,7 +278,7 @@
                             { label: 'bool', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'bool', range: range },
                             { label: 'list', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'list', range: range },
                             { label: 'obj', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'obj', range: range },
-                            
+
                             // Stdlib Functions
                             { label: 'log.print', detail: 'Print to console', kind: monaco.languages.CompletionItemKind.Function, insertText: 'log.print($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
                             { label: 'os.name', detail: 'Get OS name', kind: monaco.languages.CompletionItemKind.Function, insertText: 'os.name()', range: range },
@@ -268,6 +287,21 @@
                             { label: 'net.get', detail: 'HTTP GET request (async)', kind: monaco.languages.CompletionItemKind.Function, insertText: 'net.get("$1")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
                             { label: 'cli.input', detail: 'Prompt user input (async)', kind: monaco.languages.CompletionItemKind.Function, insertText: 'cli.input("$1")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
                             { label: 'gui.alert', detail: 'Show native alert modal', kind: monaco.languages.CompletionItemKind.Function, insertText: 'gui.alert($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            
+                            // String Methods
+                            { label: 'string.replace', detail: 'Replace substring', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.replace($1, "$2", "$3")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.split', detail: 'Split string into array', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.split($1, "$2")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.trim', detail: 'Remove whitespace from both ends', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.trim($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.upper', detail: 'Convert to uppercase', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.upper($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.lower', detail: 'Convert to lowercase', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.lower($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.length', detail: 'Get string length', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.length($1)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.includes', detail: 'Check if contains substring', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.includes($1, "$2")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.indexof', detail: 'Find index of substring', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.indexof($1, "$2")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.startswith', detail: 'Check if starts with prefix', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.startswith($1, "$2")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.endswith', detail: 'Check if ends with suffix', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.endswith($1, "$2")', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.substring', detail: 'Extract substring', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.substring($1, $2, $3)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.charat', detail: 'Get character at index', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.charat($1, $2)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
+                            { label: 'string.repeat', detail: 'Repeat string n times', kind: monaco.languages.CompletionItemKind.Function, insertText: 'string.repeat($1, $2)', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, range: range },
                         ]
                     };
                 }
@@ -301,12 +335,12 @@
             runBtn.disabled = true;
             runBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Resolving...`;
             lucide.createIcons();
-            
+
             outputDiv.innerText = "Resolving imports...";
-            
+
             try {
                 const code = editor.getValue();
-                
+
                 // 1. Resolve Imports
                 const resolver = new DennerBundle.BrowserResolver();
                 const importRegex = /import\s+"([^"]+)"/g;
@@ -323,7 +357,7 @@
                 const tokens = lexer.tokenize();
                 const parser = new DennerBundle.Parser(tokens);
                 const ast = parser.parse();
-                
+
                 // 3. Transpile
                 const jscodegen = new DennerBundle.JSCodeGenerator(ast);
                 const jsCode = jscodegen.generate();
@@ -337,13 +371,22 @@
                 };
 
                 const denner_canvas = document.getElementById('denner-canvas');
+                if (denner_canvas) {
+                    try {
+                        denner_canvas.setAttribute('tabindex', '0');
+                        denner_canvas.style.outline = 'none';
+                        denner_canvas.addEventListener('click', () => { denner_canvas.focus(); });
+                    } catch (e) { }
+                }
                 const gamePane = document.getElementById('gamePane');
                 let ctx = null;
                 let lastKey = "";
-                
+
                 const keyListener = (e) => {
+                    const preventKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '];
+                    if (preventKeys.includes(e.key)) e.preventDefault();
                     const map = {
-                        "ArrowUp": "Up", "ArrowDown": "Down", 
+                        "ArrowUp": "Up", "ArrowDown": "Down",
                         "ArrowLeft": "Left", "ArrowRight": "Right",
                         " ": "Space"
                     };
@@ -413,9 +456,30 @@
                     }
                 };
 
-                const executor = Object.getPrototypeOf(async function(){}).constructor("denner_system_print", "denner", jsCode);
+                const denner_string_replace = (str, find, repl) => String(str).replace(find, repl);
+                const denner_string_split = (str, sep) => String(str).split(sep);
+                const denner_string_trim = (str) => String(str).trim();
+                const denner_string_length = (str) => String(str).length;
+                const denner_string_upper = (str) => String(str).toUpperCase();
+                const denner_string_lower = (str) => String(str).toLowerCase();
+                const denner_string_starts = (str, prefix) => String(str).startsWith(prefix);
+                const denner_string_ends = (str, suffix) => String(str).endsWith(suffix);
+                const denner_string_includes = (str, search) => String(str).includes(search);
+                const denner_string_indexof = (str, search) => String(str).indexOf(search);
+                const denner_string_substr = (str, start, len) => String(str).substr(start, len);
+                const denner_string_substring = (str, start, end) => String(str).substring(start, end);
+                const denner_string_charat = (str, i) => String(str).charAt(i);
+                const denner_string_repeat = (str, n) => String(str).repeat(n);
+                const denner_string_padstart = (str, len, ch) => String(str).padStart(len, ch);
+                const denner_string_padend = (str, len, ch) => String(str).padEnd(len, ch);
+
+                const executor = Object.getPrototypeOf(async function () { }).constructor("denner_system_print", "denner", "denner_string_replace", "denner_string_split", "denner_string_trim", "denner_string_length", "denner_string_upper", "denner_string_lower", "denner_string_starts", "denner_string_ends", "denner_string_includes", "denner_string_indexof", "denner_string_substr", "denner_string_substring", "denner_string_charat", "denner_string_repeat", "denner_string_padstart", "denner_string_padend", jsCode);
                 try {
-                    await executor(denner_system_print, denner_stdlib);
+                    await executor(denner_system_print, denner_stdlib,
+                        denner_string_replace, denner_string_split, denner_string_trim, denner_string_length,
+                        denner_string_upper, denner_string_lower, denner_string_starts, denner_string_ends,
+                        denner_string_includes, denner_string_indexof, denner_string_substr, denner_string_substring,
+                        denner_string_charat, denner_string_repeat, denner_string_padstart, denner_string_padend);
                 } finally {
                     window.removeEventListener('keydown', keyListener);
                 }
@@ -435,4 +499,5 @@
         });
     </script>
 </body>
+
 </html>

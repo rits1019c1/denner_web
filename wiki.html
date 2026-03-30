@@ -259,6 +259,73 @@
                 </div>
             </div>
         </section>
+
+        <!-- Classes -->
+        <section class="glass rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="user" class="text-orange-400 w-6 h-6"></i>
+                <h2 class="text-2xl font-bold text-white">
+                    <span class="lang-en">5. Classes & Objects</span>
+                    <span class="lang-ja hidden-lang">5. クラスとオブジェクト</span>
+                </h2>
+            </div>
+            <p class="text-slate-400 mb-4 leading-relaxed">
+                <span class="lang-en">Denner supports Object-Oriented Programming with <code>class</code>. Use <code>constructor</code> for initialization and <code>this</code> for member access.</span>
+                <span class="lang-ja hidden-lang">Dennerは <code>class</code> によるオブジェクト指向プログラミングをサポートしています。初期化には <code>constructor</code> を、メンバアクセスには <code>this</code> を使用します。</span>
+            </p>
+            <pre><code><span class="kw">class</span> <span class="id">Player</span> {
+  <span class="id">name</span><span class="op">:</span> <span class="ty">str</span>
+  <span class="id">hp</span><span class="op">:</span> <span class="ty">num</span>
+
+  <span class="kw">function</span> <span class="fn">constructor</span>(<span class="id">name</span><span class="op">:</span> <span class="ty">str</span>, <span class="id">hp</span><span class="op">:</span> <span class="ty">num</span>) {
+    <span class="kw">this</span><span class="op">.</span><span class="id">name</span> <span class="op">=</span> <span class="id">name</span>
+    <span class="kw">this</span><span class="op">.</span><span class="id">hp</span> <span class="op">=</span> <span class="id">hp</span>
+  }
+
+  <span class="kw">function</span> <span class="fn">takeDamage</span>(<span class="id">amount</span><span class="op">:</span> <span class="ty">num</span>) {
+    <span class="kw">this</span><span class="op">.</span><span class="id">hp</span> <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="id">hp</span> <span class="op">-</span> <span class="id">amount</span>
+    <span class="fn">log.print</span>(<span class="st">"{this.name} took {amount} damage!"</span>)
+  }
+}
+
+<span class="id">p</span> <span class="op">=</span> <span class="id">Player</span>(<span class="st">"Ritsuto"</span>, <span class="nm">100</span>)
+<span class="id">p</span><span class="op">.</span><span class="fn">takeDamage</span>(<span class="nm">20</span>)</code></pre>
+        </section>
+
+        <!-- String Methods -->
+        <section class="glass rounded-2xl p-8 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <i data-lucide="type" class="text-cyan-400 w-6 h-6"></i>
+                <h2 class="text-2xl font-bold text-white">
+                    <span class="lang-en">6. String Methods</span>
+                    <span class="lang-ja hidden-lang">6. 文字列メソッド</span>
+                </h2>
+            </div>
+            <p class="text-slate-400 mb-4 leading-relaxed">
+                <span class="lang-en">Denner provides convenient string manipulation methods through the <code>str</code> module.</span>
+                <span class="lang-ja hidden-lang">Dennerは <code>str</code> モジュールを通じて便利な文字列操作メソッドを提供します。</span>
+            </p>
+            <pre><code><span class="cm">// <span class="lang-en">Replacement & Splitting</span><span class="lang-ja hidden-lang">置換・分割</span></span>
+<span class="id">result</span> <span class="op">=</span> <span class="fn">string.replace</span>(<span class="id">text</span>, <span class="st">"old"</span>, <span class="st">"new"</span>)  <span class="cm">// Replace substring</span>
+<span class="id">parts</span> <span class="op">=</span> <span class="fn">string.split</span>(<span class="id">text</span>, <span class="st">","</span>)           <span class="cm">// Split by delimiter</span>
+
+<span class="cm">// <span class="lang-en">Case Conversion</span><span class="lang-ja hidden-lang">大文字小文字変換</span></span>
+<span class="id">upper</span> <span class="op">=</span> <span class="fn">string.upper</span>(<span class="id">text</span>)                 <span class="cm">// "HELLO"</span>
+<span class="id">lower</span> <span class="op">=</span> <span class="fn">string.lower</span>(<span class="id">text</span>)                 <span class="cm">// "hello"</span>
+<span class="id">trimmed</span> <span class="op">=</span> <span class="fn">string.trim</span>(<span class="id">text</span>)               <span class="cm">// Remove whitespace</span>
+<span class="id">repeated</span> <span class="op">=</span> <span class="fn">string.repeat</span>(<span class="id">text</span>, <span class="nm">3</span>)         <span class="cm">// Repeat 3 times</span>
+
+<span class="cm">// <span class="lang-en">Search & Check</span><span class="lang-ja hidden-lang">検索・チェック</span></span>
+<span class="id">has</span> <span class="op">=</span> <span class="fn">string.includes</span>(<span class="id">text</span>, <span class="st">"hello"</span>)     <span class="cm">// true/false</span>
+<span class="id">idx</span> <span class="op">=</span> <span class="fn">string.indexof</span>(<span class="id">text</span>, <span class="st">"lo"</span>)         <span class="cm">// Index number</span>
+<span class="id">isStart</span> <span class="op">=</span> <span class="fn">string.startswith</span>(<span class="id">text</span>, <span class="st">"He"</span>)   <span class="cm">// Starts with?</span>
+<span class="id">isEnd</span> <span class="op">=</span> <span class="fn">string.endswith</span>(<span class="id">text</span>, <span class="st">"lo!"</span>)     <span class="cm">// Ends with?</span>
+
+<span class="cm">// <span class="lang-en">Extraction</span><span class="lang-ja hidden-lang">抽出</span></span>
+<span class="id">ch</span> <span class="op">=</span> <span class="fn">string.charat</span>(<span class="id">text</span>, <span class="nm">0</span>)                <span class="cm">// First character</span>
+<span class="id">sub</span> <span class="op">=</span> <span class="fn">string.substring</span>(<span class="id">text</span>, <span class="nm">0</span>, <span class="nm">5</span>)       <span class="cm">// Characters 0-4</span>
+<span class="id">len</span> <span class="op">=</span> <span class="fn">string.length</span>(<span class="id">text</span>)                 <span class="cm">// String length</span></code></pre>
+        </section>
         
     </main>
 
