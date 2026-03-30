@@ -142,7 +142,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.js"></script>
 
     <!-- Denner Compiler (Bundled) -->
-    <script src="./denner-compiler-v132.js"></script>
+    <script src="./denner-compiler-v133.js"></script>
 
     <script>
         // Lucide Icons initialization
@@ -452,6 +452,11 @@
                         },
                         loop: async () => {
                             return new Promise(resolve => requestAnimationFrame(resolve));
+                        },
+                        get_last_key: () => {
+                            const k = lastKey;
+                            if (k === "Space") lastKey = "";
+                            return k;
                         }
                     }
                 };
