@@ -113,7 +113,12 @@
         });
 
         // Key handling
+        let gameRunning = true;
         window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                gameRunning = false;
+                return;
+            }
             const map = { "ArrowUp": "Up", "ArrowDown": "Down", "ArrowLeft": "Left", "ArrowRight": "Right", " ": "Space" };
             lastKey = map[e.key] || e.key;
         });
@@ -153,10 +158,17 @@
                     ctx.fillText(t, x, y);
                 },
                 loop: () => new Promise(r => {
+                    if (!gameRunning) { r(false); return; }
                     physicsObjects.forEach(o => o.update());
                     physicsObjects.forEach(o => o.draw());
                     requestAnimationFrame(r);
-                })
+                }),
+                get_last_key: () => {
+                    if (!gameRunning) return "Escape";
+                    const k = lastKey;
+                    if (k === "Space") lastKey = "";
+                    return k;
+                }
             }
         };
 
@@ -166,7 +178,7 @@
         };
 
         // Run the Denner program using async Function to support await at top level
-        const code = "denner.gui.setup(800, 600);\ndenner_state.score = 0;\nlet player = denner.gui.rect(375, 520, 50, 30, \"#4f46e5\");\nplayer.enablePhysics({ gravity: 0 });\nfunction spawnEnemy() {\n    let enemy = denner.gui.rect(400, (-50), 40, 40, \"#f87171\");\n    enemy.enablePhysics({ gravity: 2.5 });\n}\n\nfunction shoot() {\n    let b = denner.gui.rect((player.x + 20), (player.y - 10), 10, 20, \"#fbbf24\");\n    b.enablePhysics({ gravity: (-20) });\n}\n\nlet spawnTimer = 0;\nwhile ((1 < 2)) {\n    denner.gui.clear(\"#0a0a0a\");\n    denner.gui.text(\"DENNER SHOOTER\", 20, 40, \"#6366f1\");\n    denner.gui.text((\"SCORE: \" + denner_state.score), 20, 70, \"#fff\");\n    denner.gui.text(\"Use arrow keys to move, SPACE to shoot\", 20, 580, \"#555\");\n    spawnTimer = (spawnTimer + 1);\n    if ((spawnTimer > 60)) {\n        spawnEnemy();\n        spawnTimer = 0;\n        denner_state.score = (denner_state.score + 1);\n    }\n    (await denner.gui.loop());\n}\n";
+        const code = "denner.gui.setup(800, 600);\ndenner_state.score = 0;\nlet player = denner.gui.rect(375, 520, 50, 30, \"#4f46e5\");\nplayer.enablePhysics({ gravity: 0 });\nfunction spawnEnemy() {\n    let enemy = denner.gui.rect(400, (-50), 40, 40, \"#f87171\");\n    enemy.enablePhysics({ gravity: 2.5 });\n}\n\nfunction shoot() {\n    let b = denner.gui.rect((player.x + 20), (player.y - 10), 10, 20, \"#fbbf24\");\n    b.enablePhysics({ gravity: (-20) });\n}\n\nlet spawnTimer = 0;\nwhile ((1 < 2)) {\n    denner.gui.clear(\"#0a0a0a\");\n    denner.gui.text(\"DENNER SHOOTER\", 20, 40, \"#6366f1\");\n    denner.gui.text((\"SCORE: \" + denner_state.score), 20, 70, \"#fff\");\n    denner.gui.text(\"Use arrow keys to move, SPACE to shoot\", 20, 560, \"#555\");\n    denner.gui.text(\"Press ESC to quit\", 20, 585, \"#f87171\");\n    let k = denner.gui.get_last_key();\n    if ((k === \"Escape\")) {\n        denner.gui.clear(\"#0a0a0a\");\n        denner.gui.text(\"GAME OVER\", 300, 280, \"#f87171\");\n        denner.gui.text((\"Final Score: \" + denner_state.score), 270, 320, \"#fff\");\n        denner.gui.text(\"Press any key to exit...\", 260, 360, \"#555\");\n        (await denner.gui.loop());\n        break;\n    }\n    spawnTimer = (spawnTimer + 1);\n    if ((spawnTimer > 60)) {\n        spawnEnemy();\n        spawnTimer = 0;\n        denner_state.score = (denner_state.score + 1);\n    }\n    let cont = (await denner.gui.loop());\n    if (cont === false) break;\n}\n";
         (new Function('denner', 'denner_state', 'denner_system_print', 'denner_add', '"use strict"; return (async function() {' + code + '})();'))(
             denner, denner_state, denner_system_print, denner_add
         ).catch(e => {

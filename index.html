@@ -83,6 +83,11 @@
                 <i data-lucide="book-open" class="w-4 h-4"></i>
                 Syntax Wiki
             </a>
+            <button id="stopBtn" onclick="stopExecution()"
+                class="hidden flex items-center gap-2 bg-rose-500 hover:bg-rose-400 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-rose-500/20 active:scale-95">
+                <i data-lucide="square" class="w-5 h-5"></i>
+                Stop
+            </button>
             <button id="runBtn"
                 class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
                 <i data-lucide="play" class="w-5 h-5"></i>
@@ -327,10 +332,21 @@
         // Run Logic
         const outputDiv = document.getElementById('output');
         const runBtn = document.getElementById('runBtn');
+        const stopBtn = document.getElementById('stopBtn');
         const clearBtn = document.getElementById('clearBtn');
+
+        let denner_should_stop = false;
+        let denner_executor = null;
+
+        window.stopExecution = function() {
+            denner_should_stop = true;
+        };
 
         runBtn.addEventListener('click', async () => {
             if (!editor) return;
+            denner_should_stop = false;
+            runBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
             const originalText = runBtn.innerHTML;
             runBtn.disabled = true;
             runBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Resolving...`;
@@ -385,6 +401,10 @@
                 const keyListener = (e) => {
                     const preventKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '];
                     if (preventKeys.includes(e.key)) e.preventDefault();
+                    if (e.key === 'Escape') {
+                        denner_should_stop = true;
+                        return;
+                    }
                     const map = {
                         "ArrowUp": "Up", "ArrowDown": "Down",
                         "ArrowLeft": "Left", "ArrowRight": "Right",
@@ -451,9 +471,11 @@
                             ctx.fillText(txt, x, y);
                         },
                         loop: async () => {
+                            if (denner_should_stop) return false;
                             return new Promise(resolve => requestAnimationFrame(resolve));
                         },
                         get_last_key: () => {
+                            if (denner_should_stop) return "Escape";
                             const k = lastKey;
                             if (k === "Space") lastKey = "";
                             return k;
@@ -478,9 +500,9 @@
                 const denner_string_padstart = (str, len, ch) => String(str).padStart(len, ch);
                 const denner_string_padend = (str, len, ch) => String(str).padEnd(len, ch);
 
-                const executor = Object.getPrototypeOf(async function () { }).constructor("denner_system_print", "denner", "denner_string_replace", "denner_string_split", "denner_string_trim", "denner_string_length", "denner_string_upper", "denner_string_lower", "denner_string_starts", "denner_string_ends", "denner_string_includes", "denner_string_indexof", "denner_string_substr", "denner_string_substring", "denner_string_charat", "denner_string_repeat", "denner_string_padstart", "denner_string_padend", jsCode);
+                const executor = Object.getPrototypeOf(async function () { }).constructor("denner_system_print", "denner", "denner_should_stop", "denner_string_replace", "denner_string_split", "denner_string_trim", "denner_string_length", "denner_string_upper", "denner_string_lower", "denner_string_starts", "denner_string_ends", "denner_string_includes", "denner_string_indexof", "denner_string_substr", "denner_string_substring", "denner_string_charat", "denner_string_repeat", "denner_string_padstart", "denner_string_padend", jsCode);
                 try {
-                    await executor(denner_system_print, denner_stdlib,
+                    await executor(denner_system_print, denner_stdlib, denner_should_stop,
                         denner_string_replace, denner_string_split, denner_string_trim, denner_string_length,
                         denner_string_upper, denner_string_lower, denner_string_starts, denner_string_ends,
                         denner_string_includes, denner_string_indexof, denner_string_substr, denner_string_substring,
@@ -494,6 +516,8 @@
                 outputDiv.innerHTML = `<span class="text-rose-400 font-bold">Error:</span>\n${e.message}`;
             } finally {
                 runBtn.disabled = false;
+                runBtn.classList.remove('hidden');
+                stopBtn.classList.add('hidden');
                 runBtn.innerHTML = originalText;
                 lucide.createIcons();
             }
