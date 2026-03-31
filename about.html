@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Denner - The Multi-Backend Language</title>
+    <title>About Denner - The Interpreter-based Language</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -88,9 +88,14 @@
             <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">Denner</h1>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
             <button id="langToggle" class="text-sm font-bold text-slate-400 hover:text-white transition-colors">EN / 日本語</button>
-            <a href="index.html" class="bg-indigo-500 hover:bg-indigo-400 text-white px-5 py-2 rounded-xl font-medium transition-all shadow-lg active:scale-95">
+            <a href="wiki.html" class="flex items-center gap-2 bg-slate-500/10 hover:bg-slate-500/20 text-slate-300 px-4 py-2 rounded-xl font-medium transition-all border border-slate-500/20">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                <span class="lang-en">Wiki</span>
+                <span class="lang-ja hidden-lang">Wiki</span>
+            </a>
+            <a href="index.html" class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-5 py-2 rounded-xl font-medium transition-all shadow-lg active:scale-95">
                 <span class="lang-en">Playground</span>
                 <span class="lang-ja hidden-lang">プレイグラウンド</span>
             </a>
@@ -100,16 +105,16 @@
     <!-- Hero -->
     <section class="max-w-4xl mx-auto px-6 py-20 text-center">
         <div class="flex items-center justify-center gap-3 mb-6">
-            <span class="badge bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 lang-en">v1.3.2 · Now with Physics Engine</span>
-            <span class="badge bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 lang-ja hidden-lang">v1.3.2 · 物理エンジン搭載</span>
+            <span class="badge bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 lang-en">v1.5.0 · Interpreter Engine</span>
+            <span class="badge bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 lang-ja hidden-lang">v1.5.0 · インタープリタエンジン</span>
         </div>
         <h2 class="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
             <span class="lang-en">Code Once,<br><span class="text-indigo-400">Run Everywhere.</span></span>
             <span class="lang-ja hidden-lang">一度書けば、<br><span class="text-indigo-400">どこでも動く。</span></span>
         </h2>
         <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            <span class="lang-en">Denner is a modern programming language with a physics engine, reactive UI, and dual-backend: native C++ and browser JS — both from the same source.</span>
-            <span class="lang-ja hidden-lang">Dennerは、物理エンジン・リアクティブUI・C++/JSデュアルバックエンドを備えたモダンなプログラミング言語です。</span>
+            <span class="lang-en">Denner is a modern programming language with a built-in interpreter, 2D game engine, reactive UI, and rich standard library — runs instantly with zero external dependencies.</span>
+            <span class="lang-ja hidden-lang">Dennerは、インタープリタ内蔵・2Dゲームエンジン・リアクティブUI・充実の標準ライブラリを備えたモダンなプログラミング言語です。外部依存なしで即座に実行できます。</span></span>
         </p>
         
         <div class="flex flex-wrap items-center justify-center gap-4">
@@ -131,12 +136,12 @@
                 <i data-lucide="zap" class="w-6 h-6"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-3">
-                <span class="lang-en">Dual Backend</span>
-                <span class="lang-ja hidden-lang">デュアルバックエンド</span>
+                <span class="lang-en">Instant Execution</span>
+                <span class="lang-ja hidden-lang">即座に実行</span>
             </h3>
             <p class="text-slate-400 leading-relaxed text-sm">
-                <span class="lang-en">Same source → native C++14 binary or browser JS. One language, two worlds.</span>
-                <span class="lang-ja hidden-lang">同じコードからC++14バイナリとブラウザJSを生成。一つの言語、二つの世界。</span>
+                <span class="lang-en">Interpreter-based engine. No compiler needed — just <code>denner run</code>. Also exports to standalone HTML.</span>
+                <span class="lang-ja hidden-lang">インタープリタベース。コンパイラ不要、<code>denner run</code> だけ。HTMLエクスポートも可能。</span>
             </p>
         </div>
 
@@ -215,13 +220,17 @@
                 <pre class="glass"><code><span style="color:#c678dd">gui</span>.setup(<span style="color:#d19a66">800</span>, <span style="color:#d19a66">600</span>)
 
 <span style="color:#e06c75">score</span>: <span style="color:#c678dd">num</span> <span style="color:#e5c07b">observe</span> = <span style="color:#d19a66">0</span>  <span style="color:#5c6370">// リアクティブ！</span>
-
-<span style="color:#e06c75">player</span> = <span style="color:#c678dd">gui</span>.rect(<span style="color:#d19a66">375</span>, <span style="color:#d19a66">520</span>, <span style="color:#d19a66">50</span>, <span style="color:#d19a66">30</span>, <span style="color:#98c379">"#4f46e5"</span>)
-<span style="color:#e06c75">player</span>.enablePhysics({ gravity: <span style="color:#d19a66">0</span> })
+<span style="color:#e06c75">playerX</span> = <span style="color:#d19a66">375</span>
+<span style="color:#e06c75">bullets</span> = []
+<span style="color:#e06c75">enemies</span> = []
 
 <span style="color:#c678dd">while</span> <span style="color:#d19a66">1</span> &lt; <span style="color:#d19a66">2</span> {
     <span style="color:#c678dd">gui</span>.clear(<span style="color:#98c379">"#0a0a0a"</span>)
     <span style="color:#c678dd">gui</span>.text(<span style="color:#98c379">"SCORE: "</span> + score, <span style="color:#d19a66">20</span>, <span style="color:#d19a66">70</span>, <span style="color:#98c379">"#fff"</span>)
+    <span style="color:#e06c75">k</span> = <span style="color:#c678dd">gui</span>.get_last_key()
+    <span style="color:#c678dd">if</span> k == <span style="color:#98c379">"Left"</span>  { playerX = playerX - <span style="color:#d19a66">7</span> }
+    <span style="color:#c678dd">if</span> k == <span style="color:#98c379">"Right"</span> { playerX = playerX + <span style="color:#d19a66">7</span> }
+    <span style="color:#c678dd">gui</span>.rect(playerX, <span style="color:#d19a66">520</span>, <span style="color:#d19a66">50</span>, <span style="color:#d19a66">30</span>, <span style="color:#98c379">"#4f46e5"</span>)
     <span style="color:#c678dd">gui</span>.loop()
 }</code></pre>
             </div>

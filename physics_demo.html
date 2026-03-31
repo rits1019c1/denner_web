@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>physics_demo.den - Denner Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Outfit:wght@400;700&display=swap');
         body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #fff; overflow: hidden; }
@@ -16,10 +17,25 @@
     <div class="w-full max-w-3xl flex flex-col gap-4 h-full">
         <!-- Header -->
         <div class="glass p-4 rounded-2xl flex items-center justify-between shadow-xl flex-wrap gap-2">
-            <h1 class="text-xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">physics_demo.den</h1>
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-1.5 rounded-lg">
+                    <img src="logo.png" alt="Logo" class="w-5 h-5 object-contain" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png'">
+                </div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">physics_demo.den</h1>
+            </div>
             <div class="flex gap-2 items-center flex-wrap" id="state-badges">
                 <div class="px-2 py-1 bg-white/10 rounded-md text-[10px] font-mono"><span class="text-slate-400">score:</span> <span data-denner-bind="score">0</span></div><div class="px-2 py-1 bg-white/10 rounded-md text-[10px] font-mono"><span class="text-slate-400">msg:</span> <span data-denner-bind="msg">0</span></div>
-                <div class="text-xs text-slate-500 font-mono tracking-widest uppercase">Powered by Denner Engine</div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="flex items-center gap-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 px-3 py-2 rounded-xl text-sm font-medium transition-all border border-indigo-500/20">
+                    <i data-lucide="code-2" class="w-4 h-4"></i> Playground
+                </a>
+                <a href="about.html" class="flex items-center gap-1.5 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 px-3 py-2 rounded-xl text-sm font-medium transition-all border border-pink-500/20">
+                    <i data-lucide="info" class="w-4 h-4"></i> About
+                </a>
+                <a href="wiki.html" class="flex items-center gap-1.5 bg-slate-500/10 hover:bg-slate-500/20 text-slate-300 px-3 py-2 rounded-xl text-sm font-medium transition-all border border-slate-500/20">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> Wiki
+                </a>
             </div>
         </div>
 
@@ -185,6 +201,7 @@
             denner_system_print("Runtime Error: " + e.message);
             console.error(e);
         });
+        lucide.createIcons();
     </script>
 </body>
 </html>

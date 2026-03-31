@@ -185,13 +185,13 @@
             <div class="flex items-center gap-3 mb-6">
                 <i data-lucide="layers" class="text-amber-400 w-6 h-6"></i>
                 <h2 class="text-2xl font-bold text-white">
-                    <span class="lang-en">4. Standard Library (Native & JS)</span>
+                    <span class="lang-en">4. Standard Library</span>
                     <span class="lang-ja hidden-lang">4. 標準ライブラリ</span>
                 </h2>
             </div>
             <p class="text-slate-400 mb-4 leading-relaxed">
-                <span class="lang-en">Denner comes with "batteries included" modules that seamlessly translate to Native C++ commands or Browser JS Polyfills dynamically.</span>
-                <span class="lang-ja hidden-lang">Dennerには強力な標準ライブラリが用意されており、これらはブラウザ（JavaScript）でも、C++環境でも共通のコマンドで動作します。</span>
+                <span class="lang-en">Denner comes with built-in modules that work seamlessly in both CLI (interpreter) and Web (browser) environments.</span>
+                <span class="lang-ja hidden-lang">Dennerには強力な標準ライブラリが用意されており、CLI（インタープリタ）でもWeb（ブラウザ）でも共通のAPIで動作します。</span>
             </p>
             
             <div class="space-y-4">
@@ -213,8 +213,8 @@
                 <div class="bg-white/5 p-4 rounded-xl border border-white/5">
                     <h3 class="font-bold text-emerald-300 mb-2 flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i> Networking ( <code class="text-white text-sm">net.get</code> )</h3>
                     <p class="text-sm text-slate-400 mb-2">
-                        <span class="lang-en">Executes a GET Request. Uses `fetch()` in JS and `libcurl` in C++. Wait-free asynchronous syntax automatically handled!</span>
-                        <span class="lang-ja hidden-lang">HTTP GET リクエストを実行します。裏側の処理（fetch または curl）はコンパイラが自動で解決するため同期的に書けます！</span>
+                        <span class="lang-en">Executes an HTTP GET Request. Async handling is automatic — just write it synchronously!</span>
+                        <span class="lang-ja hidden-lang">HTTP GET リクエストを実行します。非同期処理はインタープリタが自動で解決するため、同期的に書けます！</span>
                     </p>
                     <pre class="bg-black/20 !p-3"><code><span class="id">ip</span> <span class="op">=</span> <span class="fn">net.get</span>(<span class="st">"https://api.ipify.org"</span>)</code></pre>
                 </div>
@@ -225,23 +225,21 @@
                 </div>
 
                 <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                    <h3 class="font-bold text-orange-300 mb-2 flex items-center gap-2"><i data-lucide="keyboard" class="w-4 h-4"></i> User Inputs & Alerts ( <code class="text-white text-sm">cli.input</code>, <code class="text-white text-sm">cli.get_key</code>, <code class="text-white text-sm">gui.alert</code> )</h3>
+                    <h3 class="font-bold text-orange-300 mb-2 flex items-center gap-2"><i data-lucide="keyboard" class="w-4 h-4"></i> User Inputs ( <code class="text-white text-sm">cli.input</code>, <code class="text-white text-sm">cli.get_key</code> )</h3>
                     <p class="text-sm text-slate-400 mb-2">
-                        <span class="lang-en">`gui.alert` prompts standard browser modals inside JS and opens a native standalone Notification Window when running inside the Native C++ backend!</span>
-                        <span class="lang-ja hidden-lang">ユーザー入力を受けたり、通知を出します。C++ネイティブの場合は、なんと本物のOS通知ウィンドウが表示されます！</span>
-                        <span class="lang-en">`cli.get_key` reads raw keyboard input without waiting for "Enter". Perfect for controls!</span>
-                        <span class="lang-ja hidden-lang">`cli.get_key` は Enterキーを待たずに、押した瞬間にキーを1文字取得します。操作系に最適です。</span>
+                        <span class="lang-en">`cli.input` prompts the user for text input. `cli.get_key` reads raw keyboard input without waiting for "Enter" — perfect for game controls!</span>
+                        <span class="lang-ja hidden-lang">`cli.input` はユーザーにテキスト入力を求めます。`cli.get_key` はEnterキーを待たずに、押した瞬間にキーを取得します。ゲーム操作に最適です。</span>
                     </p>
                     <pre class="bg-black/20 !p-3"><code><span class="id">user_name</span> <span class="op">=</span> <span class="fn">cli.input</span>(<span class="st">"What is your name? : "</span>)
 <span class="id">key</span> <span class="op">=</span> <span class="fn">cli.get_key</span>() <span class="cm">// 'Up', 'Down', 'Left', 'Right', 'Space', 'a', etc.</span>
-<span class="fn">gui.alert</span>(<span class="st">"Welcome to Denner, {user_name}!"</span>)</code></pre>
+<span class="fn">log.print</span>(<span class="st">"Welcome, {user_name}!"</span>)</code></pre>
                 </div>
 
                 <div class="bg-white/5 p-4 rounded-xl border border-indigo-500/30">
                     <h3 class="font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="gamepad-2" class="w-4 h-4"></i> Interactive GUI & Games ( <code class="text-white text-sm">gui.setup</code>, <code class="text-white text-sm">gui.loop</code> )</h3>
                     <p class="text-sm text-slate-400 mb-2">
-                        <span class="lang-en">Specialized Canvas-based API for drawing and game loops. Web Playground only.</span>
-                        <span class="lang-ja hidden-lang">Canvasベースの描画・ゲームループAPIです。Web Playground上でフル機能を利用できます。</span>
+                        <span class="lang-en">Canvas-based API for drawing and game loops. Works in both CLI (via SDL2 window) and Web Playground.</span>
+                        <span class="lang-ja hidden-lang">Canvasベースの描画・ゲームループAPIです。CLI（SDL2ウィンドウ）でもWeb Playgroundでも動作します。</span>
                     </p>
                     <pre class="bg-black/20 !p-3"><code><span class="fn">gui.setup</span>(<span style="color: #d19a66">800</span>, <span style="color: #d19a66">600</span>)
 <span class="kw">while</span> <span class="nm">1</span> <span class="op"><</span> <span class="nm">2</span> {
