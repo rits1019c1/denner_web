@@ -253,7 +253,13 @@
   }
 
   <span class="fn">gui.loop</span>() <span class="cm">// Wait for requestAnimationFrame</span>
-}</code></pre>
+}
+
+<span class="cm">// --- [New] Physics & Utilities ---</span>
+<span class="id">dist</span> <span class="op">=</span> <span class="fn">gui.get_distance</span>(<span class="id">obj1</span>, <span class="id">obj2</span>)
+<span class="id">obj1</span><span class="op">.</span><span class="fn">animate</span>(<span class="st">"shake"</span>, <span class="nm">500</span>) <span class="cm">// Shake for 500ms</span>
+<span class="id">obj1</span><span class="op">.</span><span class="fn">animate</span>(<span class="st">"pulse"</span>, <span class="nm">1000</span>) <span class="cm">// Pulse for 1s</span>
+<span class="id">obj1</span><span class="op">.</span><span class="fn">animate</span>(<span class="st">"fade-out"</span>, <span class="nm">2000</span>) <span class="cm">// Fade out</span></code></pre>
                 </div>
             </div>
         </section>

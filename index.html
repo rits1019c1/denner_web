@@ -101,9 +101,25 @@
         <!-- Editor -->
         <div class="flex-1 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col">
             <div
-                class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center gap-2 text-xs font-mono text-slate-400">
-                <div class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
-                main.den
+                class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1.5 opacity-60">
+                        <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
+                        <span class="uppercase tracking-widest font-bold text-[9px]">Code</span>
+                    </div>
+                    <div class="h-3 w-[1px] bg-white/10"></div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></div>
+                        <span class="text-slate-300">main.den</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button id="refreshBtn" title="Refresh (Cmd+R)" class="p-1.5 hover:bg-white/5 rounded-lg transition-colors hover:text-indigo-400 group">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5 group-active:rotate-180 transition-transform duration-500"></i>
+                    </button>
+                    <div class="h-3 w-[1px] bg-white/10 mx-1"></div>
+                    <i data-lucide="more-horizontal" class="w-3.5 h-3.5 opacity-30"></i>
+                </div>
             </div>
             <div id="editorContainer" class="flex-1"></div>
         </div>
@@ -115,9 +131,16 @@
                 id="outputPane">
                 <div
                     class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
-                        Console Output
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-1.5 opacity-60">
+                            <i data-lucide="layout" class="w-3.5 h-3.5"></i>
+                            <span class="uppercase tracking-widest font-bold text-[9px]">Window</span>
+                        </div>
+                        <div class="h-3 w-[1px] bg-white/10"></div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+                            Console Output
+                        </div>
                     </div>
                     <button id="clearBtn" class="hover:text-white transition-colors">Clear</button>
                 </div>
@@ -131,9 +154,16 @@
                 class="h-1/2 glass rounded-2xl overflow-hidden shadow-2xl flex flex-col hidden border-2 border-indigo-500/30">
                 <div
                     class="bg-[#1a1d27]/70 border-b border-white/5 px-4 py-2 flex items-center justify-between text-xs font-mono text-slate-400">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="gamepad-2" class="w-3.5 h-3.5 text-indigo-400"></i>
-                        Game Canvas
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-1.5 opacity-60">
+                            <i data-lucide="layout" class="w-3.5 h-3.5"></i>
+                            <span class="uppercase tracking-widest font-bold text-[9px]">Window</span>
+                        </div>
+                        <div class="h-3 w-[1px] bg-white/10"></div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="gamepad-2" class="w-3.5 h-3.5 text-indigo-400"></i>
+                            Game Canvas
+                        </div>
                     </div>
                 </div>
                 <div class="flex-1 flex items-center justify-center bg-black overflow-hidden relative">
@@ -147,14 +177,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.js"></script>
 
     <!-- Denner Compiler (Bundled) -->
-    <script src="./denner-compiler-v134.js"></script>
+    <script src="./denner-compiler-v140.js"></script>
 
     <script>
         // Lucide Icons initialization
         lucide.createIcons();
 
         let editor;
-        const DEFAULT_CODE = `// Denner Vanilla Playground\n\nname = "Denner"\nversion = "2.0"\n\nlog.print("🚀 Running {name} v{version}!")\n\nfunction fib(n: num): num {\n  if n < 2 { return n }\n  return fib(n - 1) + fib(n - 2)\n}\n\nlog.print("Fibonacci(10):")\nlog.print(fib(10))`;
+        const DEFAULT_CODE = `// Physics & Collision Example\ngui.setup(400, 400)\n\nlet player = <rect id="player" x={150} y={50} w={30} h={30} color="blue" />\nlet ground = <rect id="ground" x={0} y={350} w={400} h={50} color="green" />\n\nlet p = gui.add(player)\nlet g = gui.add(ground)\n\np.enablePhysics({ gravity: 15 })\ng.enablePhysics({ gravity: 0 })\n\np.on("collision", function(e) {\n  if e.targetId == "ground" {\n      p.color = "red"\n  }\n})\n\nlog.print("🚀 Game started! Use Left/Right keys.")\ngui.loop()`;
 
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
 
@@ -334,6 +364,7 @@
         const runBtn = document.getElementById('runBtn');
         const stopBtn = document.getElementById('stopBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
 
         let denner_should_stop = false;
         let denner_executor = null;
@@ -341,6 +372,29 @@
         window.stopExecution = function() {
             denner_should_stop = true;
         };
+
+        const runCode = async () => {
+            if (!editor || runBtn.disabled) return;
+            denner_should_stop = true; // Stop existing
+            setTimeout(async () => {
+                denner_should_stop = false;
+                runBtn.click();
+            }, 50);
+        };
+
+        refreshBtn.addEventListener('click', runCode);
+
+        // Keyboard Shortcut: Cmd+R or Ctrl+R
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'r') {
+                e.preventDefault();
+                runCode();
+            }
+            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                runCode();
+            }
+        });
 
         runBtn.addEventListener('click', async () => {
             if (!editor) return;
@@ -397,6 +451,149 @@
                 const gamePane = document.getElementById('gamePane');
                 let ctx = null;
                 let lastKey = "";
+
+                // --- Physics Engine ---
+                const physicsObjects = [];
+
+                class DennerElement {
+                     constructor(tag, attributes, children) {
+                         this.tag = tag; this.attributes = attributes; this.children = children;
+                     }
+                }
+
+                class DennerObject {
+                    constructor(type, x, y, w, h, extra) {
+                        this.id = extra.id || type + '-' + Date.now();
+                        this.type = type;
+                        this.x = x; this.y = y; this.w = w; this.h = h;
+                        this.vx = 0; this.vy = 0;
+                        this.physicsEnabled = false;
+                        this.gravity = 0;
+                        this.color = extra.color || "#fff";
+                        this.img = extra.img || null;
+                        this.onCollision = null;
+                        this.collisionEffect = 0;
+                        this.animType = null;
+                        this.animDuration = 0;
+                        this.animTimer = 0;
+                        physicsObjects.push(this);
+                    }
+                    enablePhysics(config) {
+                        config = config || {};
+                        this.physicsEnabled = true;
+                        this.gravity = (typeof config.gravity === 'number') ? config.gravity : 9.8;
+                        return this;
+                    }
+                    on(event, cb) {
+                        if (event === 'collision') this.onCollision = cb;
+                        return this;
+                    }
+                    setImage(url) {
+                        const img = new Image();
+                        img.src = url;
+                        this.img = img;
+                        this.type = 'image';
+                    }
+                    animate(type, duration) {
+                        this.animType = type;
+                        this.animDuration = duration || 1000;
+                        this.animTimer = Math.ceil(this.animDuration / 16.6); // Convert ms to frames approx
+                        return this;
+                    }
+                    update() {
+                        if (!this.physicsEnabled) return;
+
+                        // Apply Gravity
+                        this.vy += this.gravity * 0.016; 
+                        
+                        // Vertical dampening (Stop jitter)
+                        if (Math.abs(this.vy) < 0.1) this.vy = 0;
+
+                        this.x += this.vx;
+                        this.y += this.vy;
+
+                        // Floor Collision
+                        if (denner_canvas && this.y + this.h > denner_canvas.height) {
+                            this.y = denner_canvas.height - this.h;
+                            if (Math.abs(this.vy) > 0.5) {
+                                this.vy *= -0.5; // Bounce
+                            } else {
+                                this.vy = 0; // Stop
+                            }
+                            if (this.onCollision) this.onCollision({ targetId: "floor", targetType: 'boundary', selfId: this.id });
+                        }
+
+                        // Object-to-object collisions
+                        for (let i = 0; i < physicsObjects.length; i++) {
+                            const other = physicsObjects[i];
+                            if (other === this) continue;
+                            
+                            // Simple AABB collision
+                            if (this.x < other.x + other.w && this.x + this.w > other.x && 
+                                this.y < other.y + other.h && this.y + this.h > other.y) {
+                                
+                                if (this.onCollision) this.onCollision({ targetId: other.id, targetType: other.type, selfId: this.id });
+                                
+                                // Resolve Overlap (Basic)
+                                const overlapY = (this.y + this.h/2 > other.y + other.h/2) ? (other.y + other.h - this.y) : (this.y + this.h - other.y);
+                                if (Math.abs(this.vy) > 0.1) {
+                                    this.y -= (this.y + this.h/2 > other.y + other.h/2) ? -overlapY : overlapY;
+                                    this.vy *= -0.3;
+                                }
+                                
+                                this.collisionEffect = 60; // Show ID for 1s
+                            }
+                        }
+
+                        if (this.collisionEffect > 0) this.collisionEffect--;
+                        if (this.animTimer > 0) this.animTimer--;
+                    }
+                    draw() {
+                        if (!ctx) return;
+                        ctx.save();
+
+                        // Animation Effects
+                        if (this.animTimer > 0 && this.animType) {
+                            const totalFrames = Math.ceil(this.animDuration / 16.6);
+                            const progress = this.animTimer / totalFrames;
+                            
+                            if (this.animType === 'fade-out') ctx.globalAlpha = progress;
+                            else if (this.animType === 'fade-in') ctx.globalAlpha = 1.0 - progress;
+                            else if (this.animType === 'shake') {
+                                ctx.translate(Math.random() * 4 - 2, Math.random() * 4 - 2);
+                            } else if (this.animType === 'pulse') {
+                                const s = 1.0 + Math.sin((1.0 - progress) * Math.PI * 4) * 0.1;
+                                ctx.translate(this.x + this.w/2, this.y + this.h/2);
+                                ctx.scale(s, s);
+                                ctx.translate(-(this.x + this.w/2), -(this.y + this.h/2));
+                            }
+                        }
+
+                        if (this.type === 'rect') {
+                            ctx.fillStyle = this.color;
+                            ctx.fillRect(this.x, this.y, this.w, this.h);
+                        } else if (this.type === 'image' && this.img && this.img.complete) {
+                            ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+                        }
+
+                        // Draw ID Effect
+                        if (this.collisionEffect > 0) {
+                            ctx.globalAlpha = (this.collisionEffect / 60);
+                            ctx.fillStyle = "white";
+                            ctx.font = "bold 10px Inter, sans-serif";
+                            ctx.textAlign = "center";
+                            ctx.fillText("ID: " + this.id, this.x + this.w/2, this.y - 10);
+                            
+                            // Pulse circle
+                            ctx.strokeStyle = "rgba(99, 102, 241, 1.0)";
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.arc(this.x + this.w/2, this.y + this.h/2, (this.w/2) + (60 - this.collisionEffect)/2, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                        ctx.restore();
+                    }
+                }
 
                 const keyListener = (e) => {
                     const preventKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '];
@@ -459,20 +656,66 @@
                             ctx.fillStyle = color;
                             ctx.fillRect(0, 0, denner_canvas.width, denner_canvas.height);
                         },
-                        rect: (x, y, w, h, color) => {
-                            if (!ctx) return;
-                            ctx.fillStyle = color;
-                            ctx.fillRect(x, y, w, h);
+                        rect: (x, y, w, h, color) => new DennerObject('rect', x, y, w, h, { color }),
+                        image: (url, x, y, w, h) => {
+                            const img = new Image();
+                            img.src = url;
+                            return new DennerObject('image', x, y, w, h, { img });
+                        },
+                        add: (el) => {
+                            if (el.tag === 'rect') {
+                                return new DennerObject('rect', el.attributes.x || 0, el.attributes.y || 0, el.attributes.w || 50, el.attributes.h || 50, { color: el.attributes.color || 'white', id: el.attributes.id });
+                            } else if (el.tag === 'image') {
+                                const img = new Image();
+                                img.src = el.attributes.src || '';
+                                return new DennerObject('image', el.attributes.x || 0, el.attributes.y || 0, el.attributes.w || 50, el.attributes.h || 50, { img, id: el.attributes.id });
+                            }
+                            throw new Error("Unsupported GUI element: " + el.tag);
                         },
                         text: (txt, x, y, color) => {
                             if (!ctx) return;
                             ctx.fillStyle = color;
                             ctx.font = "20px JetBrains Mono";
-                            ctx.fillText(txt, x, y);
+                            ctx.fillText(String(txt), x, y);
                         },
-                        loop: async () => {
-                            if (denner_should_stop) return false;
-                            return new Promise(resolve => requestAnimationFrame(resolve));
+                        get_distance: (o1, o2) => {
+                            if (!o1 || !o2) return 0;
+                            const dx = (o1.x + o1.w/2) - (o2.x + o2.w/2);
+                            const dy = (o1.y + o1.h/2) - (o2.y + o2.h/2);
+                            return Math.sqrt(dx * dx + dy * dy);
+                        },
+                        loop: () => {
+                            if (denner_should_stop) return Promise.resolve(false);
+                            return new Promise(resolve => {
+                                const tick = () => {
+                                    if (denner_should_stop) {
+                                        resolve(false);
+                                        return;
+                                    }
+                                    
+                                    if (ctx) {
+                                        ctx.fillStyle = 'black';
+                                        ctx.fillRect(0, 0, denner_canvas.width, denner_canvas.height);
+                                    }
+                                    
+                                    // Player control (movement)
+                                    const player = physicsObjects.find(o => o.type === 'rect' && !o.physicsEnabled);
+                                    if (player) {
+                                        if (lastKey === 'Left') player.vx = -6;
+                                        else if (lastKey === 'Right') player.vx = 6;
+                                        else player.vx = 0;
+                                        if (denner_canvas) {
+                                            if (player.x < 0) player.x = 0;
+                                            if (player.x + player.w > denner_canvas.width) player.x = denner_canvas.width - player.w;
+                                        }
+                                    }
+
+                                    physicsObjects.forEach(o => o.update());
+                                    physicsObjects.forEach(o => o.draw());
+                                    requestAnimationFrame(tick);
+                                };
+                                tick();
+                            });
                         },
                         get_last_key: () => {
                             if (denner_should_stop) return "Escape";
