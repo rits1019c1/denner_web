@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction | Denner Complete Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg: #020617;
+            --sidebar-bg: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #10B981;
+            --border: rgba(255, 255, 255, 0.08);
+            --code-bg: #0f172a;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background-color: var(--bg); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        .sidebar { width: 320px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 32px 24px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .logo-area { font-size: 26px; font-weight: 700; margin-bottom: 48px; display: flex; align-items: center; gap: 12px; color: white; cursor: pointer; text-decoration: none; }
+        .nav-section { margin-bottom: 32px; }
+        .nav-title { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; padding-left: 4px; }
+        .nav-item { display: flex; align-items: center; color: var(--text-main); text-decoration: none; font-size: 15px; padding: 10px 12px; border-radius: 8px; transition: all 0.2s; margin-bottom: 4px; }
+        .nav-item span { margin-right: 12px; font-weight: 700; color: var(--primary); opacity: 0.7; font-size: 12px; width: 24px; }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--primary); }
+        .nav-item.active { background: rgba(99, 102, 241, 0.1); color: var(--primary); font-weight: 600; border: 1px solid rgba(99, 102, 241, 0.2); }
+
+        .content { flex: 1; padding: 80px 120px; max-width: 1100px; }
+        section { margin-bottom: 120px; }
+        h1 { font-size: 48px; margin-bottom: 24px; letter-spacing: -2px; line-height: 1.1; }
+        h2 { font-size: 32px; margin-top: 80px; margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+        h3 { font-size: 22px; margin-top: 48px; margin-bottom: 16px; color: var(--primary); }
+        p { line-height: 1.8; color: var(--text-muted); font-size: 17px; margin-bottom: 24px; }
+        .highlight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 40px 0; }
+        .highlight-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 24px; border-radius: 16px; }
+        .highlight-card h4 { margin: 0 0 12px 0; color: white; }
+        footer { margin-top: 100px; padding-top: 40px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <a href="index.html" class="logo-area">
+        <span style="background: linear-gradient(135deg, var(--primary), #D946EF); width: 32px; height: 32px; border-radius: 8px; display: inline-block;"></span>
+        Denner Guide
+    </a>
+
+    <div class="nav-section">
+        <div class="nav-title">I. Getting Started</div>
+        <a href="index.html" class="nav-item"><span>01</span>Introduction</a>
+        <a href="setup.html" class="nav-item"><span>05</span>Setup & CLI</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-title">II. Language Fundamentals</div>
+        <a href="syntax.html" class="nav-item"><span>15</span>Modern Syntax</a>
+        <a href="logic.html" class="nav-item"><span>35</span>Control Flow</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-title">III. GUI & Physics</div>
+        <a href="gui.html" class="nav-item"><span>65</span>GUI & Physics</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-title">IV. Advanced Patterns</div>
+        <a href="advanced.html" class="nav-item"><span>85</span>Advanced</a>
+    </div>
+</aside>
+
+<main class="content">
+    <section>
+        <h1>Introduction <small style="font-weight: 400; opacity: 0.5;">(1-4)</small></h1>
+        <p>Denner は、直感的な構文と最新の GUI 物理エンジンを融合させた、高速なスクリプティング言語です。Tauri と React のエコシステムを背景に持ちながら、ユーザーが複雑なインフラを意識することなく、数行のコードで対話的なアプリケーションを作成できるよう設計されています。</p>
+        
+        <div class="highlight-grid">
+            <div class="highlight-card">
+                <h4>Keyword-free</h4>
+                <p>変数宣言に <code>let</code> 等のキーワードは不要です。直接代入するだけで使い始められます。</p>
+            </div>
+            <div class="highlight-card">
+                <h4>Proactive GUI</h4>
+                <p>内蔵の物理エンジンにより、衝突や重力、アニメーションを簡単に扱えます。</p>
+            </div>
+            <div class="highlight-card">
+                <h4>Reactive State</h4>
+                <p><code>observe</code> キーワードにより、状態の変化が自動的に UI へ同期されます。</p>
+            </div>
+        </div>
+    </section>
+    <footer>
+        &copy; 2026 Denner Foundation. All rights reserved. v1.7.0 Release.
+    </footer>
+</main>
+
+<script>
+    // Navigation active state logic
+    const path = window.location.pathname;
+    const page = path.split("/").pop() || "index.html";
+    document.querySelectorAll('.nav-item').forEach(item => {
+        if (item.getAttribute('href') === page) item.classList.add('active');
+        else item.classList.remove('active');
+    });
+
+    // Copy logic
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const code = btn.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code);
+            btn.innerText = 'Copied!';
+            setTimeout(() => btn.innerText = 'Copy', 2000);
+        });
+    });
+</script>
+
+</body>
+</html>
