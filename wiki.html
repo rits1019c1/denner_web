@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Denner Wiki — 言語リファレンス & ドキュメント</title>
+  <meta name="description" content="Dennerプログラミング言語の公式ドキュメント。構文、型、モジュール、組み込み関数などの完全なリファレンスガイド。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base: #09090f;
+      --bg-surface: #0f0f1a;
+      --bg-card: rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.065);
+      --border: rgba(255,255,255,0.08);
+      --border-accent: rgba(139,92,246,0.35);
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139,92,246,0.3);
+      --secondary: #6366f1;
+      --accent: #a78bfa;
+      --green: #34d399;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --blue: #60a5fa;
+      --orange: #fb923c;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --font-sans: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --sidebar-w: 260px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      height: 58px;
+      background: rgba(9,9,15,0.90);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 200;
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-img { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 0 8px var(--primary-glow)); }
+    .logo-text {
+      font-size: 1.15rem; font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #818cf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      letter-spacing: -0.02em;
+    }
+    .badge {
+      font-family: var(--font-mono); font-size: 0.65rem; padding: 2px 7px;
+      border-radius: 20px; background: var(--primary-glow); border: 1px solid var(--border-accent);
+      color: var(--accent); font-weight: 600;
+    }
+    nav { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    nav a {
+      font-size: 0.85rem; font-weight: 500; padding: 6px 14px; border-radius: 8px;
+      text-decoration: none; color: var(--text-secondary); transition: all 0.2s; border: 1px solid transparent;
+    }
+    nav a:hover { color: var(--text-primary); background: var(--bg-card-hover); border-color: var(--border); }
+    nav a.active { color: var(--accent); background: rgba(139,92,246,0.12); border-color: var(--border-accent); }
+    .btn-gh {
+      margin-left: 8px; font-size: 0.8rem; font-weight: 600; padding: 7px 16px;
+      border-radius: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; text-decoration: none; transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 4px 15px rgba(139,92,246,0.3);
+    }
+    .btn-gh:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ─── LAYOUT ─── */
+    .page-wrap { display: flex; flex: 1; max-width: 1300px; margin: 0 auto; width: 100%; }
+
+    /* ─── SIDEBAR ─── */
+    aside {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      padding: 28px 0;
+      position: sticky;
+      top: 58px;
+      height: calc(100vh - 58px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+    }
+    .sidebar-section { margin-bottom: 6px; }
+    .sidebar-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-muted); padding: 6px 20px; margin-top: 14px; display: block;
+    }
+    aside a {
+      display: flex; align-items: center; gap: 8px; padding: 6px 20px 6px 28px;
+      font-size: 0.82rem; font-weight: 500; color: var(--text-secondary);
+      text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s;
+    }
+    aside a:hover { color: var(--text-primary); background: var(--bg-card); }
+    aside a.active { color: var(--accent); border-left-color: var(--primary); background: rgba(139,92,246,0.08); }
+
+    /* ─── CONTENT ─── */
+    main { flex: 1; padding: 40px 56px; max-width: 900px; min-width: 0; }
+
+    /* ─── HERO ─── */
+    .hero {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+      padding: 40px 0 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--accent); background: rgba(139,92,246,0.12); border: 1px solid var(--border-accent);
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .hero h1 {
+      font-size: 2.8rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #f1f5f9 30%, #94a3b8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+    .hero-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.75rem; font-weight: 600; padding: 5px 12px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);
+    }
+    .chip span { font-size: 0.85em; }
+
+    /* ─── SECTIONS ─── */
+    .section { margin-bottom: 54px; scroll-margin-top: 80px; }
+    .section-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      font-size: 1.1rem; width: 36px; height: 36px; border-radius: 9px;
+      background: rgba(139,92,246,0.12); border: 1px solid var(--border-accent);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .section h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+    .section h3 { font-size: 1rem; font-weight: 600; color: var(--accent); margin: 24px 0 10px; }
+    .section p { color: var(--text-secondary); line-height: 1.75; margin-bottom: 14px; font-size: 0.92rem; }
+    .section ul { list-style: none; margin-bottom: 14px; }
+    .section ul li {
+      display: flex; align-items: flex-start; gap: 8px; padding: 4px 0;
+      font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;
+    }
+    .section ul li::before { content: '→'; color: var(--primary); font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── CODE BLOCK ─── */
+    .code-block {
+      background: #050509;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      margin: 14px 0 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .code-lang {
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .btn-copy {
+      font-family: var(--font-sans); font-size: 0.68rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 5px; background: var(--bg-card);
+      border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy:hover { color: var(--text-secondary); border-color: rgba(255,255,255,0.15); }
+    .btn-copy.copied { color: var(--green); border-color: rgba(52,211,153,0.3); }
+    pre {
+      padding: 18px 20px; overflow-x: auto;
+      font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.75;
+    }
+
+    /* ─── SYNTAX HIGHLIGHTING ─── */
+    .kw  { color: #a78bfa; font-weight: 600; }
+    .ty  { color: #34d399; }
+    .st  { color: #fbbf24; }
+    .nm  { color: #60a5fa; }
+    .cm  { color: #374151; font-style: italic; }
+    .fn  { color: #f9a8d4; }
+    .id  { color: #e2e8f0; }
+    .op  { color: #94a3b8; }
+    .it  { color: #fb923c; }
+
+    /* ─── TABLE ─── */
+    .doc-table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 0.85rem; }
+    .doc-table th {
+      text-align: left; padding: 10px 14px; background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border); color: var(--accent); font-weight: 600;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .doc-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-secondary); vertical-align: top; }
+    .doc-table tr:last-child td { border-bottom: none; }
+    .doc-table tr:hover td { background: var(--bg-card); }
+    code {
+      font-family: var(--font-mono); font-size: 0.82em; padding: 2px 6px;
+      border-radius: 4px; background: rgba(139,92,246,0.15); color: var(--accent);
+    }
+
+    /* ─── CALLOUT ─── */
+    .callout {
+      display: flex; gap: 12px; padding: 14px 16px; border-radius: var(--radius);
+      margin: 16px 0; border-left: 3px solid;
+    }
+    .callout.tip { background: rgba(52,211,153,0.07); border-color: var(--green); }
+    .callout.note { background: rgba(96,165,250,0.07); border-color: var(--blue); }
+    .callout.warn { background: rgba(251,191,36,0.07); border-color: var(--yellow); }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; }
+    .callout-body { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; }
+    .callout-body strong { color: var(--text-primary); }
+
+    /* ─── INSTALL SECTION ─── */
+    .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    .install-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; transition: border-color 0.2s;
+    }
+    .install-card:hover { border-color: var(--border-accent); }
+    .install-card-header {
+      display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+      background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+      font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);
+    }
+    .install-card pre { font-size: 0.76rem; padding: 12px 14px; }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border); padding: 28px 32px;
+      text-align: center; font-size: 0.78rem; color: var(--text-muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      aside { display: none; }
+      main { padding: 28px 24px; }
+      .install-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <a class="logo-wrap" href="index.html">
+    <img class="logo-img" src="logo.png" alt="Denner Logo" onerror="this.style.display='none'" />
+    <span class="logo-text">Denner</span>
+    <span class="badge">v1.7.1</span>
+  </a>
+  <nav>
+    <a href="index.html">🎮 Playground</a>
+    <a href="wiki.html" class="active">📚 Wiki</a>
+    <a class="btn-gh" href="https://github.com/rits1019c1/denner" target="_blank">GitHub ↗</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <!-- Sidebar -->
+  <aside>
+    <span class="sidebar-label">はじめに</span>
+    <a href="#overview" class="active">📖 概要</a>
+    <a href="#install">📦 インストール</a>
+
+    <span class="sidebar-label">言語リファレンス</span>
+    <a href="#variables">📝 変数 & 型</a>
+    <a href="#operators">➕ 演算子</a>
+    <a href="#control">🔀 制御フロー</a>
+    <a href="#functions">⚙️ 関数</a>
+    <a href="#classes">🧱 クラス</a>
+    <a href="#modules">📦 モジュール</a>
+
+    <span class="sidebar-label">標準ライブラリ</span>
+    <a href="#builtin-log">🖨️ log</a>
+    <a href="#builtin-gui">🎨 gui</a>
+    <a href="#builtin-list">📝 list</a>
+    <a href="#builtin-string">🔤 string</a>
+    <a href="#builtin-net">🌐 net</a>
+    <a href="#builtin-os">💻 os</a>
+    <a href="#builtin-path">📁 path</a>
+    <a href="#builtin-cli">📟 cli</a>
+    <span class="sidebar-label">ゲーム開発ガイド</span>
+    <a href="#guide-objects">🧱 GUIオブジェクト操作</a>
+    <a href="#guide-events">⚡ イベント駆動開発</a>
+    <a href="#guide-collision">📐 衝突判定</a>
+    <a href="#guide-recipes">🍱 逆引き！実践レシピ</a>
+    <a href="#guide-tutorial">🕹️ 実践：ブロック崩し</a>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- HERO -->
+    <div class="hero">
+      <span class="hero-badge">📚 Official Documentation</span>
+      <h1>Denner Language<br/>Reference</h1>
+      <p>SwiftやPython、JavaScriptにインスパイアされた、クリーンな構文を持つモダンな静的型付けスクリプト言語のリファレンスガイド。</p>
+      <div class="hero-chips">
+        <div class="chip"><span>🛡️</span> 静的型付け</div>
+        <div class="chip"><span>🚀</span> 即時実行</div>
+        <div class="chip"><span>🏗️</span> モジュールシステム</div>
+        <div class="chip"><span>🌐</span> URLインポート</div>
+        <div class="chip"><span>🧱</span> クラスサポート</div>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="section-header">
+        <div class="section-icon">📖</div>
+        <h2>Dennerとは</h2>
+      </div>
+      <p>Dennerは、静的型付けとシンプルな構文を両立したスクリプト言語です。独自のツリーウォーキング・インタープリタにより、コンパイル不要で即座にコードを実行できます。</p>
+      <table class="doc-table">
+        <thead><tr><th>機能</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td>🚀 <strong>高速起動</strong></td><td>Node.js上で動作する軽量なインタープリタ。数ミリ秒で実行開始。</td></tr>
+          <tr><td>🛡️ <strong>静的型付け</strong></td><td>強力な型推論と明示的な型注釈により、バグを未然に防ぎます。</td></tr>
+          <tr><td>🏗️ <strong>モジュール</strong></td><td><code>import</code>/<code>export</code>による名前空間の分離。URLインポートにも対応。</td></tr>
+          <tr><td>🧱 <strong>クラス</strong></td><td>OOPサポート。<code>class</code>、<code>this</code>、メソッドを使った設計が可能。</td></tr>
+          <tr><td>🌐 <strong>Webブラウザ</strong></td><td>ブラウザ上で直接Dennerを実行できるPlayground対応。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- INSTALL -->
+    <section class="section" id="install">
+      <div class="section-header">
+        <div class="section-icon">📦</div>
+        <h2>インストール</h2>
+      </div>
+      <p>ワンライナーでDenner CLIをインストールできます。</p>
+      <div class="install-grid">
+        <div class="install-card">
+          <div class="install-card-header">🍎 macOS / Linux</div>
+          <pre><span class="id">curl</span> <span class="op">-fsSL</span> https://raw.githubusercontent.com/
+rits1019c1/denner/refs/heads/main/install.sh
+<span class="op">|</span> sh</pre>
+        </div>
+        <div class="install-card">
+          <div class="install-card-header">🪟 Windows (PowerShell)</div>
+          <pre><span class="id">powershell</span> <span class="op">-ExecutionPolicy</span> Bypass <span class="op">-Command</span> 
+<span class="st">"irm ...install.ps1 | iex"</span></pre>
+        </div>
+      </div>
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>インターネット不要:</strong> <a href="index.html" style="color:var(--accent)">Playground</a>でブラウザ上から即座にDennerを試すこともできます。</div>
+      </div>
+
+      <h3>基本コマンド</h3>
+      <table class="doc-table">
+        <thead><tr><th>コマンド</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>denner run &lt;file&gt;</code></td><td>スクリプトを実行</td></tr>
+          <tr><td><code>denner</code></td><td>インタラクティブREPLを起動</td></tr>
+          <tr><td><code>denner update</code></td><td>最新バージョンに更新</td></tr>
+          <tr><td><code>denner install &lt;version&gt;</code></td><td>特定バージョンをインストール</td></tr>
+          <tr><td><code>denner list</code></td><td>利用可能なバージョン一覧を表示</td></tr>
+          <tr><td><code>denner --version</code></td><td>現在のバージョンを表示</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- VARIABLES -->
+    <section class="section" id="variables">
+      <div class="section-header">
+        <div class="section-icon">📝</div>
+        <h2>変数 & 型</h2>
+      </div>
+      <p>変数は型推論により自動的に型が決まります。明示的な型注釈も使用できます。</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// 型推論</span>
+<span class="id">x</span>         <span class="op">=</span> <span class="nm">10</span>          <span class="cm">// num (整数)</span>
+<span class="id">pi</span>        <span class="op">=</span> <span class="nm">3.14</span>        <span class="cm">// num (小数)</span>
+<span class="id">name</span>      <span class="op">=</span> <span class="st">"Denner"</span>    <span class="cm">// str</span>
+<span class="id">isActive</span>  <span class="op">=</span> <span class="kw">true</span>        <span class="cm">// bool</span>
+<span class="id">items</span>     <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]   <span class="cm">// list</span>
+
+<span class="cm">// 文字列補間 {変数名} で埋め込み</span>
+<span class="id">log</span>.<span class="fn">print</span>(<span class="st">"Hello, {name}! x = {x}"</span>)</pre>
+      </div>
+
+      <h3>型一覧</h3>
+      <table class="doc-table">
+        <thead><tr><th>型</th><th>説明</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td><code>num</code></td><td>整数・浮動小数点数</td><td><code>42</code>, <code>3.14</code></td></tr>
+          <tr><td><code>str</code></td><td>文字列</td><td><code>"hello"</code></td></tr>
+          <tr><td><code>bool</code></td><td>真偽値</td><td><code>true</code>, <code>false</code></td></tr>
+          <tr><td><code>list</code></td><td>配列</td><td><code>[1, 2, 3]</code></td></tr>
+          <tr><td><code>void</code></td><td>戻り値なし（関数用）</td><td>—</td></tr>
+          <tr><td><code>any</code></td><td>任意の型</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- OPERATORS -->
+    <section class="section" id="operators">
+      <div class="section-header">
+        <div class="section-icon">➕</div>
+        <h2>演算子</h2>
+      </div>
+      <table class="doc-table">
+        <thead><tr><th>種類</th><th>演算子</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td>算術</td><td><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code></td><td><code>10 + 3 * 2</code></td></tr>
+          <tr><td>比較</td><td><code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td><td><code>x > 5</code></td></tr>
+          <tr><td>論理</td><td><code>&&</code> <code>||</code> <code>!</code></td><td><code>a && b</code></td></tr>
+          <tr><td>代入</td><td><code>=</code></td><td><code>x = 10</code></td></tr>
+          <tr><td>範囲</td><td><code>n..m</code></td><td><code>0..10</code>（0以上10未満）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CONTROL FLOW -->
+    <section class="section" id="control">
+      <div class="section-header">
+        <div class="section-icon">🔀</div>
+        <h2>制御フロー</h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// if / else if / else</span>
+<span class="id">score</span> <span class="op">=</span> <span class="nm">85</span>
+<span class="kw">if</span> <span class="id">score</span> <span class="op">>=</span> <span class="nm">90</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"A"</span>)
+} <span class="kw">else if</span> <span class="id">score</span> <span class="op">>=</span> <span class="nm">70</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"B"</span>)
+} <span class="kw">else</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"C"</span>)
+}
+
+<span class="cm">// while ループ</span>
+<span class="id">i</span> <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> <span class="id">i</span> <span class="op">&lt;</span> <span class="nm">5</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="id">i</span>)
+    <span class="id">i</span> <span class="op">=</span> <span class="id">i</span> <span class="op">+</span> <span class="nm">1</span>
+}
+
+<span class="cm">// for 範囲ループ (0..n は0以上n未満)</span>
+<span class="kw">for</span> <span class="id">i</span> <span class="kw">in</span> <span class="nm">0</span>..<span class="nm">10</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="id">i</span>)
+}
+
+<span class="cm">// for イテレーション</span>
+<span class="id">fruits</span> <span class="op">=</span> [<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cherry"</span>]
+<span class="kw">for</span> <span class="id">fruit</span> <span class="kw">in</span> <span class="id">fruits</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="id">fruit</span>)
+}</pre>
+      </div>
+    </section>
+
+    <!-- FUNCTIONS -->
+    <section class="section" id="functions">
+      <div class="section-header">
+        <div class="section-icon">⚙️</div>
+        <h2>関数</h2>
+      </div>
+      <p>関数は<code>function</code>キーワードで定義します。引数と戻り値に型注釈を付けることができます。</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// 基本的な関数</span>
+<span class="kw">function</span> <span class="fn">add</span>(<span class="id">a</span>: <span class="ty">num</span>, <span class="id">b</span>: <span class="ty">num</span>): <span class="ty">num</span> {
+    <span class="kw">return</span> <span class="id">a</span> <span class="op">+</span> <span class="id">b</span>
+}
+
+<span class="cm">// 再帰関数</span>
+<span class="kw">function</span> <span class="fn">factorial</span>(<span class="id">n</span>: <span class="ty">num</span>): <span class="ty">num</span> {
+    <span class="kw">if</span> <span class="id">n</span> <span class="op">&lt;=</span> <span class="nm">1</span> { <span class="kw">return</span> <span class="nm">1</span> }
+    <span class="kw">return</span> <span class="id">n</span> <span class="op">*</span> <span class="fn">factorial</span>(<span class="id">n</span> <span class="op">-</span> <span class="nm">1</span>)
+}
+
+<span class="cm">// 呼び出し</span>
+<span class="id">result</span> <span class="op">=</span> <span class="fn">add</span>(<span class="nm">3</span>, <span class="nm">4</span>)               <span class="cm">// 7</span>
+<span class="id">log</span>.<span class="fn">print</span>(<span class="st">"5! = {factorial(5)}"</span>)  <span class="cm">// 120</span></pre>
+      </div>
+    </section>
+
+    <!-- CLASSES -->
+    <section class="section" id="classes">
+      <div class="section-header">
+        <div class="section-icon">🧱</div>
+        <h2>クラス</h2>
+      </div>
+      <p><code>class</code>キーワードでクラスを定義できます。<code>this</code>で自分自身のプロパティにアクセスします。</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="kw">class</span> <span class="ty">Animal</span> {
+    <span class="id">name</span>: <span class="ty">str</span>
+    <span class="id">sound</span>: <span class="ty">str</span>
+
+    <span class="kw">function</span> <span class="fn">speak</span>() {
+        <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"{this.name} says {this.sound}!"</span>)
+    }
+}
+
+<span class="id">dog</span> <span class="op">=</span> <span class="ty">Animal</span>()
+<span class="id">dog</span>.<span class="id">name</span>  <span class="op">=</span> <span class="st">"Rex"</span>
+<span class="id">dog</span>.<span class="id">sound</span> <span class="op">=</span> <span class="st">"woof"</span>
+<span class="id">dog</span>.<span class="fn">speak</span>()  <span class="cm">// Rex says woof!</span></pre>
+      </div>
+      <div class="callout note">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">現在のDennerではコンストラクタ引数に対応していません。インスタンス生成後にプロパティを設定してください。</div>
+      </div>
+    </section>
+
+    <!-- MODULES -->
+    <section class="section" id="modules">
+      <div class="section-header">
+        <div class="section-icon">📦</div>
+        <h2>モジュール</h2>
+      </div>
+      <p><code>import</code>でモジュールを読み込み、<code>export</code>で公開できます。URLからのインポートにも対応しています。</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner — lib.den</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// lib.den</span>
+<span class="kw">export function</span> <span class="fn">multiply</span>(<span class="id">a</span>: <span class="ty">num</span>, <span class="id">b</span>: <span class="ty">num</span>): <span class="ty">num</span> {
+    <span class="kw">return</span> <span class="id">a</span> <span class="op">*</span> <span class="id">b</span>
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner — main.den</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// main.den</span>
+<span class="kw">import</span> <span class="st">"./lib"</span>
+
+<span class="id">result</span> <span class="op">=</span> <span class="fn">multiply</span>(<span class="nm">3</span>, <span class="nm">7</span>)
+<span class="id">log</span>.<span class="fn">print</span>(<span class="id">result</span>)  <span class="cm">// 21</span>
+
+<span class="cm">// URLインポートも可能</span>
+<span class="kw">import</span> <span class="st">"https://raw.githubusercontent.com/.../lib.den"</span></pre>
+      </div>
+    </section>
+
+    <!-- BUILT-INS: gui -->
+    <section class="section" id="builtin-gui">
+      <div class="section-header">
+        <div class="section-icon">🎨</div>
+        <h2>モジュール: <code>gui</code></h2>
+      </div>
+      <p>ゲーム開発やグラフィック描画のための強力なモジュールです。ピクセル単位の描画と毎秒60フレームのメインループをサポートします。</p>
+      
+      <h3>描画メソッド</h3>
+      <table class="doc-table">
+        <thead><tr><th>メソッド</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>gui.setup(w, h)</code></td><td>キャンバスを初期化します（幅 <code>w</code> 、高さ <code>h</code> ）。</td></tr>
+          <tr><td><code>gui.clear(color)</code></td><td>画面全体を指定した色で塗りつぶします（背景クリア）。</td></tr>
+          <tr><td><code>gui.fillRect(x, y, w, h, c?)</code></td><td>塗りつぶされた四角形を描画します。</td></tr>
+          <tr><td><code>gui.rect(x, y, w, h, color)</code></td><td>枠線のみの四角形を描画します。</td></tr>
+          <tr><td><code>gui.roundRect(x, y, w, h, r, c)</code></td><td>角が丸い四角形を描画します（ <code>r</code> は半径）。</td></tr>
+          <tr><td><code>gui.gradient(x,y,w,h, c1, c2, v?)</code></td><td>グラデーションで塗りつぶします（ <code>v</code> は垂直/水平）。</td></tr>
+          <tr><td><code>gui.circle(x, y, r, color)</code></td><td>塗りつぶされた円を描画します（ <code>r</code> は半径）。</td></tr>
+          <tr><td><code>gui.line(x1, y1, x2, y2, c, lw?)</code></td><td>直線を引きます（ <code>lw</code> は線の太さ）。</td></tr>
+          <tr><td><code>gui.text(txt, x, y, c, sz?, f?)</code></td><td>テキストを描画します（ <code>sz</code> :サイズ, <code>f</code> :フォント）。</td></tr>
+          <tr><td><code>gui.textCenter(txt, x, y, c, sz?)</code></td><td>中心座標を指定してテキストを中央寄せで描画します。</td></tr>
+          <tr><td><code>gui.image(url, x, y, w, h)</code></td><td>指定URLの画像をロードして描画します（非同期）。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>入力 & 状態管理</h3>
+      <table class="doc-table">
+        <thead><tr><th>メソッド</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>gui.isKeyPressed(key)</code></td><td>指定したキー（ <code>"ArrowUp"</code> 等）が現在押されていれば <code>true</code> を返します。</td></tr>
+          <tr><td><code>gui.get_last_key()</code></td><td>最後に押された、または離されたキーの名前を取得します。</td></tr>
+          <tr><td><code>gui.width()</code> / <code>gui.height()</code></td><td>現在のキャンバスの幅と高さを返します。</td></tr>
+          <tr><td><code>gui.loop(callback)</code></td><td>毎フレーム（1/60s）実行されるメインループを開始します。</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner — 基本的なゲームループ</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="kw">import</span> <span class="st">"gui"</span>
+<span class="id">pos_x</span> <span class="op">=</span> <span class="nm">0</span>
+
+<span class="kw">function</span> <span class="fn">update</span>() {
+    <span class="id">gui</span>.<span class="fn">clear</span>(<span class="st">"#0f0f1a"</span>)
+    <span class="id">gui</span>.<span class="fn">fillRect</span>(<span class="id">pos_x</span>, <span class="nm">250</span>, <span class="nm">50</span>, <span class="nm">50</span>, <span class="st">"#8b5cf6"</span>)
+    <span class="id">pos_x</span> <span class="op">=</span> <span class="id">pos_x</span> <span class="op">+</span> <span class="nm">2</span>
+    <span class="kw">if</span> <span class="id">pos_x</span> <span class="op">></span> <span class="nm">800</span> { <span class="id">pos_x</span> <span class="op">=</span> <span class="nm">0</span> }
+}
+
+<span class="id">gui</span>.<span class="fn">loop</span>(<span class="id">update</span>)</pre>
+      </div>
+    </section>
+
+    <!-- BUILT-INS: list -->
+    <section class="section" id="builtin-list">
+      <div class="section-header">
+        <div class="section-icon">📝</div>
+        <h2>組み込み: <code>list</code> メソッド</h2>
+      </div>
+      <p>リスト型（配列）で使用できる組み込みメソッドです。<code>list.method()</code> の形式で呼び出せます。</p>
+      <table class="doc-table">
+        <thead><tr><th>メソッド</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>l.push(v)</code></td><td>リストの末尾に値 <code>v</code> を追加します。</td></tr>
+          <tr><td><code>l.pop()</code></td><td>リストの末尾から要素を取り出し、その値を返します。</td></tr>
+          <tr><td><code>l.unshift(v)</code></td><td>リストの先頭に値 <code>v</code> を追加します。</td></tr>
+          <tr><td><code>l.shift()</code></td><td>リストの先頭から要素を取り出し、その値を返します。</td></tr>
+          <tr><td><code>l.length()</code></td><td>リストの現在の要素数を返します（ <code>l.length</code> プロパティも可）。</td></tr>
+          <tr><td><code>l.join(sep)</code></td><td>全要素を指定の区切り文字 <code>sep</code> で繋いで文字列にします。</td></tr>
+          <tr><td><code>l.slice(s, e)</code></td><td>インデックス <code>s</code> から <code>e</code> の範囲をコピーした新しいリストを作ります。</td></tr>
+          <tr><td><code>l.reverse()</code></td><td>リストの要素の順序を反転させます（破壊的）。</td></tr>
+          <tr><td><code>l.includes(v)</code></td><td>値 <code>v</code> がリストに含まれているか判定します（ <code>true</code> / <code>false</code> ）。</td></tr>
+          <tr><td><code>l.indexof(v)</code></td><td>値 <code>v</code> が最初に見つかったインデックスを返します（なければ -1 ）。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- BUILT-INS: string -->
+    <section class="section" id="builtin-string">
+      <div class="section-header">
+        <div class="section-icon">🔤</div>
+        <h2>組み込み: <code>string</code> メソッド</h2>
+      </div>
+      <p>文字列型（<code>str</code>）には、以下のメソッドがデフォルトで組み込まれており、<code>"text".method()</code> の形式で呼び出すことができます。モジュールのインポートは不要です。</p>
+      <table class="doc-table">
+        <thead><tr><th>メソッド</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>s.upper()</code> / <code>s.lower()</code></td><td>文字列をすべて大文字または小文字に変換します。</td></tr>
+          <tr><td><code>s.length()</code></td><td>文字列の文字数を返します。</td></tr>
+          <tr><td><code>s.trim()</code></td><td>文字列の前後にある空白（スペース、タブ、改行）を除去します。</td></tr>
+          <tr><td><code>s.includes(q)</code></td><td>文字列が <code>q</code> を含んでいるか判定します（ <code>true</code> / <code>false</code> ）。</td></tr>
+          <tr><td><code>s.startswith(p)</code> / <code>s.endswith(p)</code></td><td>文字列が特定の文字列 <code>p</code> で始まっているか、または終わっているか判定します。</td></tr>
+          <tr><td><code>s.split(sep)</code></td><td>文字列を区切り文字 <code>sep</code> で分割し、リストを返します。</td></tr>
+          <tr><td><code>s.replace(f, r)</code></td><td>最初に見つかった <code>f</code> を <code>r</code> に置換します。</td></tr>
+          <tr><td><code>s.substring(s, e)</code></td><td>インデックス <code>s</code> から <code>e</code> の直前までの部分文字列を返します。</td></tr>
+          <tr><td><code>s.substr(s, l)</code></td><td>インデックス <code>s</code> から <code>l</code> 文字分の部分文字列を返します。</td></tr>
+          <tr><td><code>s.charat(i)</code></td><td>インデックス <code>i</code> の位置にある文字を返します。</td></tr>
+          <tr><td><code>s.repeat(n)</code></td><td>文字列を <code>n</code> 回繰り返した新しい文字列を返します。</td></tr>
+          <tr><td><code>s.padstart(l, c)</code> / <code>s.padend(l, c)</code></td><td>文字列が指定の長さ <code>l</code> になるよう、先頭または末尾を <code>c</code> で埋めます。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- BUILT-INS: net -->
+    <section class="section" id="builtin-net">
+      <div class="section-header">
+        <div class="section-icon">🌐</div>
+        <h2>組み込み: <code>net</code></h2>
+      </div>
+      <p><code>import "net"</code>でHTTP通信やサーバー機能を使用できます。</p>
+      <div class="callout warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>net.serve</strong>はNode.js環境（CLI）専用です。ブラウザPlaygroundでは通信のみ（<code>net.get</code>）動作します。</div>
+      </div>
+      <table class="doc-table">
+        <thead><tr><th>関数</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>net.get(url)</code></td><td>HTTP GETリクエストを送信し、レスポンスを返します。</td></tr>
+          <tr><td><code>net.serve(port, handler)</code></td><td>指定ポートでHTTPサーバーを起動します。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>net.serve の使い方</h3>
+      <p>サーバーを起動すると、指定した <code>handler</code> 関数がリクエストごとに実行されます。</p>
+      <div class="code-block">
+        <pre><span class="id">net</span>.<span class="fn">serve</span>(<span class="nm">8080</span>, <span class="kw">function</span>(<span class="id">url</span>) {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"Request: "</span> <span class="op">+</span> <span class="id">url</span>)
+    
+    <span class="kw">if</span> <span class="id">url</span> <span class="op">==</span> <span class="st">"/"</span> {
+        <span class="kw">return</span> <span class="st">"Hello, Denner Server!"</span>
+    }
+    
+    <span class="cm">// HTMLタグを直接返すことも可能です</span>
+    <span class="kw">return</span> <span class="st">"&lt;h1&gt;Not Found&lt;/h1&gt;"</span>
+})</pre>
+      </div>
+    </section>
+
+    <!-- BUILT-INS: math -->
+    <section class="section" id="builtin-math">
+      <div class="section-header">
+        <div class="section-icon">🔢</div>
+        <h2>組み込み: 数学演算</h2>
+      </div>
+      <p>Dennerでは基本的な算術演算子が直接使用できます。</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="id">a</span> <span class="op">=</span> <span class="nm">10</span> <span class="op">+</span> <span class="nm">3</span>    <span class="cm">// 13</span>
+<span class="id">b</span> <span class="op">=</span> <span class="nm">10</span> <span class="op">-</span> <span class="nm">3</span>    <span class="cm">// 7</span>
+<span class="id">c</span> <span class="op">=</span> <span class="nm">10</span> <span class="op">*</span> <span class="nm">3</span>    <span class="cm">// 30</span>
+<span class="id">d</span> <span class="op">=</span> <span class="nm">10</span> <span class="op">/</span> <span class="nm">3</span>    <span class="cm">// 3.333...</span>
+<span class="id">e</span> <span class="op">=</span> <span class="nm">10</span> <span class="op">%</span> <span class="nm">3</span>    <span class="cm">// 1 (余り)</span></pre>
+      </div>
+    </section>
+
+    <!-- BUILT-INS: os -->
+    <section class="section" id="builtin-os">
+      <div class="section-header">
+        <div class="section-icon">💻</div>
+        <h2>組み込み: <code>os</code></h2>
+      </div>
+      <p><code>import "os"</code>でOSに関する情報を取得できます。</p>
+      <table class="doc-table">
+        <thead><tr><th>関数</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>os.name()</code></td><td>現在のプラットフォーム名を返します（darwin/linux/win32/browser）</td></tr>
+          <tr><td><code>os.env(key)</code></td><td>環境変数の値を返します</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- BUILT-INS: path -->
+    <section class="section" id="builtin-path">
+      <div class="section-header">
+        <div class="section-icon">📁</div>
+        <h2>組み込み: <code>path</code></h2>
+      </div>
+      <p><code>import "path"</code>でファイルパスの操作を行えます。</p>
+      <table class="doc-table">
+        <thead><tr><th>関数</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>path.join(...p)</code></td><td>複数のパスを結合して1つのパスにします。</td></tr>
+          <tr><td><code>path.basename(p)</code></td><td>パスからファイル名部分（末尾）を抽出します。</td></tr>
+          <tr><td><code>path.dirname(p)</code></td><td>パスからディレクトリ部分を抽出します。</td></tr>
+          <tr><td><code>path.extname(p)</code></td><td>パスから拡張子（.txt等）を抽出します。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- BUILT-INS: cli -->
+    <section class="section" id="builtin-cli">
+      <div class="section-header">
+        <div class="section-icon">📟</div>
+        <h2>組み込み: <code>cli</code></h2>
+      </div>
+      <p><code>import "cli"</code>でターミナル入力を扱えます。</p>
+      <table class="doc-table">
+        <thead><tr><th>関数</th><th>説明</th></tr></thead>
+        <tbody>
+          <tr><td><code>cli.input(p)</code></td><td>プロンプトを表示してユーザーの入力を1行読み取ります。</td></tr>
+          <tr><td><code>cli.get_key()</code></td><td>キー入力があるまで待機し、そのキーを返します。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- GUIDE: GUI Objects -->
+    <section class="section" id="guide-objects">
+      <div class="section-header">
+        <div class="section-icon">🧱</div>
+        <h2>GUIオブジェクト操作</h2>
+      </div>
+      <p><code>gui.add()</code> で生成したオブジェクトは、ただの静止画ではなく、<b>「生きている物理オブジェクト」</b>です。変数に保存することで、ゲーム中にその状態を自由に変更できます。</p>
+
+      <h3>操作できるプロパティ</h3>
+      <p>生成したオブジェクトの変数を通じて、以下の値を読み書きできます。</p>
+      
+      <table class="doc-table">
+        <thead><tr><th>プロパティ</th><th>説明</th><th>実例</th></tr></thead>
+        <tbody>
+          <tr><td><code>obj.x, obj.y</code></td><td>現在位置。直接書き換えるとワープします。</td><td><code>p.x = 400</code></td></tr>
+          <tr><td><code>obj.dx, obj.dy</code></td><td>移動速度（デルタ）。毎フレームこの分だけ自動で移動します。</td><td><code>p.dy = -5</code></td></tr>
+          <tr><td><code>obj.w, obj.h</code></td><td>オブジェクトの幅と高さ。</td><td><code>p.w = 100</code></td></tr>
+          <tr><td><code>obj.color</code></td><td>オブジェクトの色を動的に変更します。</td><td><code>p.color = "red"</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>テクニック:</strong> <code>ball.dx = 0 - ball.dx</code> と書くことで、速度のプラスマイナスを反転させ、「跳ね返り」を簡単に実現できます。
+        </div>
+      </div>
+
+      <h3>オブジェクトを消去する (gui.remove)</h3>
+      <p>敵を倒した時やアイテムを拾った時は、<code>gui.remove(obj)</code> を使って画面から即座に取り除けます。消されたオブジェクトは、衝突判定の対象からも自動的に外れます。</p>
+    </section>
+
+    <!-- GUIDE: Event Driven -->
+    <section class="section" id="guide-events">
+      <div class="section-header">
+        <div class="section-icon">⚡</div>
+        <h2>イベント駆動開発</h2>
+      </div>
+      <p>「何かが起きたとき」にだけ処理を走らせるのが <b>イベント駆動プログラミング</b> です。<code>gui.loop</code> の中で <code>if</code> 文を書きすぎるのを防ぎ、コードをスッキリと綺麗に保つことができます。</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// 🖱️ クリックされた瞬間に弾を発射する例</span>
+<span class="id">gui</span>.<span class="fn">on</span>(<span class="st">"click"</span>, <span class="kw">function</span>(<span class="id">x</span>, <span class="id">y</span>) {
+    <span class="id">bullet</span> <span class="op">=</span> <span class="id">gui</span>.<span class="fn">add</span>({ <span class="id">tag</span>: <span class="st">"circle"</span>, <span class="id">x</span>: <span class="id">player</span>.<span class="id">x</span>, <span class="id">y</span>: <span class="id">player</span>.<span class="id">y</span>, <span class="id">r</span>: <span class="nm">5</span> })
+    <span class="id">bullet</span>.<span class="id">dy</span> <span class="op">=</span> <span class="op">-</span><span class="nm">10</span>
+})
+
+<span class="cm">// ⌨️ キーが押された瞬間の処理</span>
+<span class="id">gui</span>.<span class="fn">on</span>(<span class="st">"keydown"</span>, <span class="kw">function</span>(<span class="id">key</span>) {
+    <span class="kw">if</span> <span class="id">key</span> <span class="op">==</span> <span class="st">"Space"</span> { <span class="id">player</span>.<span class="id">jump</span>() }
+})</pre>
+      </div>
+    </section>
+
+    <!-- GUIDE: Collision Detection -->
+    <section class="section" id="guide-collision">
+      <div class="section-header">
+        <div class="section-icon">📐</div>
+        <h2>ゲーム開発ガイド: 衝突判定</h2>
+      </div>
+      <p>Dennerでは、面倒な座標計算を行わずに <strong>「当たった瞬間」</strong> に処理を実行できる強力なイベント駆動システムが用意されています。</p>
+
+      <h3>1. 自動衝突判定 (おすすめ)</h3>
+      <p><code>gui.add()</code> で作成したオブジェクト同士が当たったとき、自動的に <code>"collision"</code> イベントが発生します。</p>
+      
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cm">// オブジェクトの生成</span>
+<span class="id">ball</span> <span class="op">=</span> <span class="id">gui</span>.<span class="fn">add</span>({ <span class="id">tag</span>: <span class="st">"circle"</span>, <span class="id">x</span>: <span class="nm">400</span>, <span class="id">y</span>: <span class="nm">300</span>, <span class="id">r</span>: <span class="nm">10</span>, <span class="id">color</span>: <span class="st">"white"</span> })
+<span class="id">paddle</span> <span class="op">=</span> <span class="id">gui</span>.<span class="fn">add</span>({ <span class="id">tag</span>: <span class="st">"rect"</span>, <span class="id">x</span>: <span class="nm">400</span>, <span class="id">y</span>: <span class="nm">550</span>, <span class="id">w</span>: <span class="nm">80</span>, <span class="id">h</span>: <span class="nm">15</span>, <span class="id">color</span>: <span class="st">"blue"</span> })
+
+<span class="cm">// 💥 衝突イベント。自分(o1)と相手(o2)が渡されます</span>
+<span class="id">gui</span>.<span class="fn">on</span>(<span class="st">"collision"</span>, <span class="kw">function</span>(<span class="id">o1</span>, <span class="id">o2</span>) {
+    <span class="kw">if</span> <span class="id">o1</span> <span class="op">==</span> <span class="id">ball</span> {
+        <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"Hit!"</span>)
+        <span class="id">ball</span>.<span class="id">dy</span> <span class="op">=</span> <span class="nm">0</span> <span class="op">-</span> <span class="id">ball</span>.<span class="id">dy</span> <span class="cm">// 跳ね返る</span>
+    }
+})</pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>ヒント:</strong> オブジェクトを消したい場合は <code>gui.remove(o2)</code> と書くだけで、ブロックなどを画面から消去できます。
+        </div>
+      </div>
+
+      <h3>2. プログラムの終了 (exit)</h3>
+      <p>ゲームオーバー時や特定の条件でプログラムをピタッと止めたいときは、<code>exit()</code> を呼びます。</p>
+      
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="kw">if</span> <span class="id">ball</span>.<span class="id">y</span> <span class="op">></span> <span class="nm">600</span> {
+    <span class="id">log</span>.<span class="fn">print</span>(<span class="st">"Game Over"</span>)
+    <span class="fn">exit</span>() <span class="cm">// 🛑 プログラムを終了して停止する</span>
+}</pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>重要: めり込み防止（座標リセット）</strong><br>
+          衝突時に速度 <code>dy</code> を反転させるだけでなく、<code>ball.y = target.y - 10</code> のように座標を少し戻すことで、多重衝突バグ（ブルブル震えたり突き抜けたりする現象）を確実に防げます。
+        </div>
+      </div>
+      <h3>3. 手動での判定 (AABB)</h3>
+      <p>独自の複雑な計算が必要な場合は、四角形の重なり（AABB理論）を直接コードで書くこともできます。</p>
+      
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="kw">function</span> <span class="fn">hits</span>(<span class="id">r1x</span>, <span class="id">r1y</span>, <span class="id">r1w</span>, <span class="id">r1h</span>, <span class="id">r2x</span>, <span class="id">r2y</span>, <span class="id">r2w</span>, <span class="id">r2h</span>): <span class="ty">bool</span> {
+    <span class="kw">return</span> <span class="id">r1x</span> <span class="op">&lt;</span> <span class="id">r2x</span> <span class="op">+</span> <span class="id">r2w</span> <span class="op">&&</span> <span class="id">r1x</span> <span class="op">+</span> <span class="id">r1w</span> <span class="op">></span> <span class="id">r2x</span> <span class="op">&&</span>
+           <span class="id">r1y</span> <span class="op">&lt;</span> <span class="id">r2y</span> <span class="op">+</span> <span class="id">r2h</span> <span class="op">&&</span> <span class="id">r1y</span> <span class="op">+</span> <span class="id">r1h</span> <span class="op">></span> <span class="id">r2y</span>
+}</pre>
+      </div>
+    </section>
+
+    <!-- GUIDE: Recipes -->
+    <section class="section" id="guide-recipes">
+      <div class="section-header">
+        <div class="section-icon">🍱</div>
+        <h2>逆引き！実践レシピ</h2>
+      </div>
+      <p>ゲーム開発でよく使う「お決まりのパターン」を集めました。コピペして組み合わせてみましょう。</p>
+      
+      <h3>🚀 画面の左右で跳ね返らせる</h3>
+      <div class="code-block">
+        <pre><span class="kw">if</span> <span class="id">ball</span>.<span class="id">x</span> <span class="op">&lt;</span> <span class="nm">0</span> <span class="op">or</span> <span class="id">ball</span>.<span class="id">x</span> <span class="op">></span> <span class="nm">790</span> { 
+    <span class="id">ball</span>.<span class="id">dx</span> <span class="op">=</span> <span class="nm">0</span> <span class="op">-</span> <span class="id">ball</span>.<span class="id">dx</span> 
+}</pre>
+      </div>
+
+      <h3>🏆 スコアを画面に表示し続ける</h3>
+      <p><code>gui.loop</code> の中で、毎フレームクリアした直後に描画します。</p>
+      <div class="code-block">
+        <pre><span class="id">gui</span>.<span class="fn">loop</span>(<span class="kw">function</span>() {
+    <span class="id">gui</span>.<span class="fn">clear</span>(<span class="st">"#000"</span>)
+    <span class="id">gui</span>.<span class="fn">text</span>(<span class="st">"SCORE: "</span> <span class="op">+</span> <span class="id">score</span>, <span class="nm">20</span>, <span class="nm">40</span>, <span class="st">"white"</span>, <span class="nm">24</span>)
+})</pre>
+      </div>
+
+      <h3>🧱 たくさんのブロックを作る (2次元ループ)</h3>
+      <div class="code-block">
+        <pre><span class="kw">for</span> <span class="id">r</span> <span class="kw">in</span> <span class="nm">0</span>..<span class="nm">4</span> {
+    <span class="kw">for</span> <span class="id">c</span> <span class="kw">in</span> <span class="nm">0</span>..<span class="nm">8</span> {
+        <span class="id">gui</span>.<span class="fn">add</span>({ <span class="id">tag</span>: <span class="st">"rect"</span>, <span class="id">x</span>: <span class="id">c</span><span class="op">*</span><span class="nm">90</span><span class="op">+</span><span class="nm">40</span>, <span class="id">y</span>: <span class="id">r</span><span class="op">*</span><span class="nm">30</span><span class="op">+</span><span class="nm">60</span>, <span class="id">w</span>: <span class="nm">80</span>, <span class="id">h</span>: <span class="nm">20</span>, <span class="id">color</span>: <span class="st">"red"</span> })
+    }
+}</pre>
+      </div>
+    </section>
+
+      <h3>3. 手動での判定 (AABB)</h3>
+      <p>独自の複雑な計算が必要な場合は、四角形の重なり（AABB理論）を直接コードで書くこともできます。</p>
+      
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">denner</span><button class="btn-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="kw">function</span> <span class="fn">hits</span>(<span class="id">r1x</span>, <span class="id">r1y</span>, <span class="id">r1w</span>, <span class="id">r1h</span>, <span class="id">r2x</span>, <span class="id">r2y</span>, <span class="id">r2w</span>, <span class="id">r2h</span>): <span class="ty">bool</span> {
+    <span class="kw">return</span> <span class="id">r1x</span> <span class="op">&lt;</span> <span class="id">r2x</span> <span class="op">+</span> <span class="id">r2w</span> <span class="op">&&</span> <span class="id">r1x</span> <span class="op">+</span> <span class="id">r1w</span> <span class="op">></span> <span class="id">r2x</span> <span class="op">&&</span>
+           <span class="id">r1y</span> <span class="op">&lt;</span> <span class="id">r2y</span> <span class="op">+</span> <span class="id">r2h</span> <span class="op">&&</span> <span class="id">r1y</span> <span class="op">+</span> <span class="id">r1h</span> <span class="op">></span> <span class="id">r2y</span>
+}</pre>
+      </div>
+    </section>
+<span class="kw">function</span> <span class="fn">circlesHit</span>(<span class="id">x1</span>, <span class="id">y1</span>, <span class="id">r1</span>, <span class="id">x2</span>, <span class="id">y2</span>, <span class="id">r2</span>): <span class="ty">bool</span> {
+    <span class="id">dist</span> <span class="op">=</span> <span class="id">gui</span>.<span class="fn">get_distance</span>({<span class="id">x</span>:<span class="id">x1</span>, <span class="id">y</span>:<span class="id">y1</span>}, {<span class="id">x</span>:<span class="id">x2</span>, <span class="id">y</span>:<span class="id">y2</span>})
+    <span class="kw">return</span> <span class="id">dist</span> <span class="op">&lt;</span> (<span class="id">r1</span> <span class="op">+</span> <span class="id">r2</span>)
+}</pre>
+      </div>
+
+      <div class="callout tip">
+        <span class="id">ball</span>.<span class="id">dy</span> <span class="op">=</span> <span class="nm">0</span> <span class="op">-</span> <span class="id">ball</span>.<span class="id">dy</span>
+        <span class="kw">if</span> <span class="id">o2</span>.<span class="id">tag</span> <span class="op">==</span> <span class="st">"rect"</span> { <span class="id">gui</span>.<span class="fn">remove</span>(<span class="id">o2</span>) }
+    }
+})
+
+<span class="id">gui</span>.<span class="fn">loop</span>(<span class="kw">function</span>() {
+    <span class="id">gui</span>.<span class="fn">clear</span>(<span class="st">"#0f0f1a"</span>)
+    <span class="id">ball</span>.<span class="id">x</span> <span class="op">=</span> <span class="id">ball</span>.<span class="id">x</span> <span class="op">+</span> <span class="id">ball</span>.<span class="id">dx</span>
+    <span class="id">ball</span>.<span class="id">y</span> <span class="id">ball</span>.<span class="id">y</span> <span class="op">+</span> <span class="id">ball</span>.<span class="id">dy</span>
+    <span class="kw">if</span> <span class="id">ball</span>.<span class="id">y</span> <span class="op">></span> <span class="nm">600</span> { <span class="fn">exit</span>() } <span class="cm">// 🛑 落ちたら終了</span>
+})</pre>
+      </div>
+    </section>
+
+<footer>
+  <p>Denner Programming Language — MIT License — <a href="https://github.com/rits1019c1/denner" target="_blank">GitHub</a> — <a href="index.html">🎮 Playground</a></p>
+</footer>
+
+<script>
+  // Copy button
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.section');
+  const links = document.querySelectorAll('aside a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`aside a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
